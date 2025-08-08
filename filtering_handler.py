@@ -2,7 +2,7 @@
 from __future__ import annotations
 from typing import Iterable, List, Optional
 import pandas as pd
-from exclusion_criteria import ExclusionCriteria
+from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveDuplicates
 
 class FilteringHandler:
     """
@@ -37,3 +37,11 @@ class FilteringHandler:
             keep_mask &= ~exclude_mask
 
         return df.loc[keep_mask].copy()
+
+
+
+if __name__ == "__main__":
+    fh = FilteringHandler(exclusion_rules=[RemoveDuplicates(), RemoveTestInstances(), RemoveByStatus()])
+    df = pd.read_csv("data/subscriptions.csv")
+    clean_df = fh.filter(df)
+    print(1)

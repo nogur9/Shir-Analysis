@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 from churn_analysis import ChurnAnalyzer
 from filtering_handler import FilteringHandler
-from exclusion_criteria import RemoveTestInstances, RemoveSpecificCustomers
+from exclusion_criteria import RemoveTestInstances, RemoveSpecificCustomers, RemoveByStatus, RemoveShortPeriod, RemoveDuplicates
 from consts import start_at_col, canceled_at_col, ended_at_col
 
 
@@ -20,7 +20,11 @@ if not uploaded and not use_sample:
 source = "data/subscriptions.csv" if use_sample and not uploaded else uploaded
 
 st.sidebar.header("Filters")
-enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=True)
+enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=False)
+enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances (shir*)", value=False)
+enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=False)
+enable_remove_duplicates = st.sidebar.checkbox("Exclude duplicated instances", value=False)
+
 
 id_col = st.sidebar.text_input("ID column (for explicit removals)", value="Customer ID")
 ids_to_remove_txt = st.sidebar.text_area("IDs to remove (one per line)", value="")
@@ -32,8 +36,15 @@ ending_column = st.sidebar.selectbox(label = "select canceled column", options=[
 rules = []
 if enable_test_instances:
     rules.append(RemoveTestInstances())
+if enable_remove_short_period:
+    rules.append(RemoveShortPeriod())
+if enable_remove_by_status:
+    rules.append(RemoveByStatus())
+if enable_remove_duplicates:
+    rules.append(RemoveDuplicates())
 if ids_to_remove and id_col:
-    rules.append(RemoveSpecificCustomers(id_col=id_col, ids_to_remove=ids_to_remove))
+    rules.append(RemoveSpecificCustomers(ids_to_remove=ids_to_remove))
+
 fh = FilteringHandler(rules)
 
 with st.spinner("Analyzing..."):
@@ -41,12 +52,23 @@ with st.spinner("Analyzing..."):
     summary = an.compute_monthly_churn_summary()
 
 st.subheader("Monthly Churn (Base + Cancels + Rate)")
-st.dataframe(summary, use_container_width=True)
 
-fig = an.plot_monthly_churn_summary(summary)
-st.plotly_chart(fig, use_container_width=True)
+
+# Tabs for each analysis
+tabs = st.tabs(["Full Data", "Start-End", "Churn & Active"])
+
+with tabs[0]:
+    fig = an.plot_full_monthly_churn_summary_full(summary)
+    st.plotly_chart(fig, use_container_width=True)
+with tabs[1]:
+    fig = an.plot_monthly_churn_summary_start_end(summary)
+    st.plotly_chart(fig, use_container_width=True)
+with tabs[2]:
+    fig = an.plot_monthly_churn_summary(summary)
+    st.plotly_chart(fig, use_container_width=True)
 
 with st.expander("Diagnostics"):
-    st.write("Active rules:", [r.__class__.__name__ for r in fh.rules] or "None")
-    st.write("Columns present:", list(an.get_df().columns))
+    st.write("Number Of Instances:", an.get_df().shape[0])
+    st.dataframe(summary, use_container_width=True)
+
 
