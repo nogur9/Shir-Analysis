@@ -1,28 +1,50 @@
-class ExclusionCriteria:
-
-    def __init__(self):
-        pass
-
-    def filter(self, row) -> bool:
-        raise NotImplemented
+# exclusion_criteria.py
+from abc import ABC, abstractmethod
+from typing import Optional
+import pandas as pd
+from consts import email_col, name_col, customer_id_col  # you already have these
 
 
+class ExclusionCriteria(ABC):
+    """Return True for rows that should be EXCLUDED."""
+    @abstractmethod
+    def filter(self, row: pd.Series) -> bool:
+        raise NotImplementedError
 
-class
-### functions
+
+class RemoveTestInstances(ExclusionCriteria):
+    """Exclude customers with 'shir' in name/email, except one email."""
+    def filter(self, row: pd.Series) -> bool:
+        # Guard for missing cols
+        em = str(row.get(email_col, "") or "")
+        nm = str(row.get(name_col, "") or "")
+
+        if em == "kshirjarohannaik@gmail.com":
+            return False
+        return ("shir" in em.lower()) or ("shir" in nm.lower())
+
+
+# Example: exclude specific customers by id/email (vectorizable-ish helper)
+class RemoveSpecificCustomers(ExclusionCriteria):
+    def __init__(self, ids_to_remove: list[str] | None = None):
+        self.ids_to_remove = set(map(str, ids_to_remove or []))
+
+    def filter(self, row: pd.Series) -> bool:
+        val = str(row.get(customer_id_col, "") or "")
+        return val in self.ids_to_remove
+
 
 """
 
-דברים בסטטוס canceled שהם לא באמת canceled:
+# Example: exclude free/internal domains
+class RemoveInternalEmails(ExclusionCriteria):
+    def __init__(self, domains: Optional[list[str]] = None):
+        self.domains = set((domains or ["example.com", "internal.acme"]).map(str))
 
--	אנשים שעשו ביטול למנוי ויצרו מנוי אחר (כאילו, עברו לתכנית אחרת) אם יש פער גדול מידי בין הזמנים, אז זה לא נחשב (נניח עד חודשיים הפרש, אחרת זה פרישה ואז חזרה).
--	יש כמה כפילויות במשתמשים - להסיר אותם. (הם נמצאים תמיד ב- canceled)
--	אם גם השם והשם משפחה / מייל זהה, אז להסיר
--	לפעמים כפילויות זה יכול להיות 17 פעם.
--	יש כאלה שרצו לשנות מנוי, ויצאו ונכנסו מחדש לאתר
--	איך לדעת מי מהכפילויות אמיתי? זה תמיד הזה שהוא אקטיב.
--	יכול להיות כפילויות שכולן canceled, ואז תכלס זה אותו אחד 
--	המצב היחיד שמישהו הוא churn יותר מפעם אחת, זה אם הוא עשה מנוי, ביטל. אחרי חודשיים עשה מנוי שוב, ואז שוב פרש.
--	אם מישהו cancelled ולא שילמו כלום, אז לא נחשב גם כן
+    def filter(self, row: pd.Series) -> bool:
+        em = str(row.get(email_col, "") or "")
+        dom = em.split("@")[-1].lower() if "@" in em else ""
+        return dom in self.domains
+
 
 """
