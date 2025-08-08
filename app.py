@@ -21,7 +21,7 @@ source = "data/subscriptions.csv" if use_sample and not uploaded else uploaded
 
 st.sidebar.header("Filters")
 enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=False)
-enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances (shir*)", value=False)
+enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances", value=False)
 enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=False)
 enable_remove_duplicates = st.sidebar.checkbox("Exclude duplicated instances", value=False)
 
