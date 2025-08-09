@@ -1,6 +1,4 @@
-# streamlit_app.py
 import streamlit as st
-import pandas as pd
 from churn_analysis import ChurnAnalyzer
 from filtering_handler import FilteringHandler
 from exclusion_criteria import RemoveTestInstances, RemoveSpecificCustomers, RemoveByStatus, RemoveShortPeriod, RemoveDuplicates

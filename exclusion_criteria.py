@@ -1,8 +1,6 @@
 # exclusion_criteria.py
 from abc import ABC, abstractmethod
-from typing import Optional
 import pandas as pd
-from numpy.compat import asstr
 import datetime
 from consts import *
 
