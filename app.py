@@ -70,5 +70,3 @@ with tabs[2]:
 with st.expander("Diagnostics"):
     st.write("Number Of Instances:", an.get_df().shape[0])
     st.dataframe(summary, use_container_width=True)
-
-
