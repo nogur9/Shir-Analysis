@@ -28,43 +28,6 @@ class RemoveTestInstances(ExclusionCriteria):
             return False
         return ("shir" in em.lower()) or ("shir" in nm.lower())
 
-class RemoveDuplicates(ExclusionCriteria):
-    from utils.duplication_analysis import DuplicationAnalysis
-
-    def filter(self, row: pd.Series, dup_analyser:DuplicationAnalysis, *args) -> bool:
-
-
-        def in_inclusion(_row, _inclusion_df, _customer_id):
-            cust = _inclusion_df[_inclusion_df['customer_id'] == _customer_id].iloc[0]
-            if (cust[start_at_col] == _row[start_at_col]) and \
-                (cust[canceled_at_col] == _row[canceled_at_col]):
-                return True
-            else:
-                return False
-
-        if inclusion_data_path is None:
-            duplicated_customers = pd.read_csv(duplicated_customers_path)['customer_id'].to_list()
-            customer_id =  row[email_col] + '-' + row[name_col]
-            return customer_id in duplicated_customers
-
-
-        else:
-            inclusion_df = pd.read_csv(inclusion_data_path)
-            assert inclusion_df.customer_id.nunique() == inclusion_df.shape[0]
-            for col in [start_at_col, canceled_at_col]:
-                inclusion_df[col] = pd.to_datetime(inclusion_df[col], errors="coerce")
-
-            # assert self.duplicated_customers_path is real
-            duplicated_customers = pd.read_csv(duplicated_customers_path)['customer_id']
-            customer_id =  row[email_col] + '-' + row[name_col]
-            if customer_id in duplicated_customers:
-                if in_inclusion(row, inclusion_df, customer_id):
-                    return False
-                else:
-                    return True
-            else:
-                return False
-
 
 class RemoveShortPeriod(ExclusionCriteria):
     min_durance = 30 # days

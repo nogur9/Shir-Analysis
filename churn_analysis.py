@@ -3,7 +3,9 @@ from dataclasses import dataclass, field
 from typing import Iterable, Optional, Union
 import pandas as pd
 from filtering_handler import FilteringHandler
-from consts import start_at_col, canceled_at_col, ended_at_col,  email_col, name_col, status_col
+from consts import (start_at_col, canceled_at_col, ended_at_col,  email_col,
+                    name_col, status_col, new_cust, fixes)
+from consts import new_cust
 from utils.duplication_analysis import DuplicationAnalysis
 import numpy as np
 import plotly.graph_objects as go
@@ -13,10 +15,13 @@ from plotly.subplots import make_subplots
 @dataclass
 class ChurnAnalyzer:
     # Columns
-    use_end_col: str = "Canceled At (UTC)",   # or "Ended At (UTC)"
+    end_col: str = "Canceled At (UTC)",   # or "Ended At (UTC)"
 
     _df: Optional[pd.DataFrame] = None
     filtering: FilteringHandler = field(default_factory=FilteringHandler)
+
+    def __init__(self):
+        self.duplicates_analyser = None
 
     def load(self, source: Union[str, pd.DataFrame]) -> "ChurnAnalyzer":
         df = pd.read_csv(source) if isinstance(source, str) else source.copy()
@@ -25,20 +30,31 @@ class ChurnAnalyzer:
         df[name_col] = df[name_col].str.lower()
         df['cust_id'] = df[email_col] + '-' + df[name_col]
 
-        DuplicationAnalysis(df=df)
-
         for col in [start_at_col, canceled_at_col, ended_at_col]:
             if col in df.columns:
                 df[col] = pd.to_datetime(df[col], errors="coerce")
-        self._df = df
+        self.duplicates_analyser = DuplicationAnalysis(df=df, end_col=self.end_col)
+        self._df = self.duplicates_analyser.handle_duplications()
+        self._df = self.fix_and_add()
         return self
 
+    def fix_and_add(self):
+        df = self._df.copy()
+        df_new_cust = pd.DataFrame([new_cust])
+        for cust in fixes:
+            if 'start_date' in cust.keys():
+                df.loc[df[email_col] == cust['email'], start_at_col] = cust['start_date']
+            elif 'end_date' in cust.keys():
+                df.loc[df[email_col] == cust['email'], ended_at_col] = cust['end_date']
+
+        return pd.concat([df, df_new_cust])
 
     def _assert(self, df: pd.DataFrame):
         if df.empty:
             raise ValueError("empty DataFrame")
         # guard for columns
-        required_cols = [start_at_col, canceled_at_col, email_col, name_col, status_col] + [self.use_end_col]
+        required_cols = [start_at_col, canceled_at_col,
+                         email_col, name_col, status_col] + [self.end_col]
         for col in required_cols:
             if col not in df.columns:
                 raise KeyError(f"Missing column '{col}'.")
@@ -50,7 +66,7 @@ class ChurnAnalyzer:
 
         # derive monthly periods
         start_month = df[start_at_col].dt.to_period("M")
-        end_month = df[self.use_end_col].dt.to_period("M")
+        end_month = df[self.end_col].dt.to_period("M")
 
         # bounds
         min_month = start_month.min()
