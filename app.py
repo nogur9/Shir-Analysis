@@ -15,7 +15,7 @@ source = "data/subscriptions.csv"
 st.sidebar.header("Filters")
 enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=False)
 enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances", value=False)
-enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=False)
+enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=True)
 enable_remove_non_payments = st.sidebar.checkbox("Exclude customers paid < 60", value=False)
 
 

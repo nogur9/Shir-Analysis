@@ -108,7 +108,7 @@ class ChurnAnalyzer:
 
         # monthly histograms
         miss_months = [i for i in start_month.value_counts().index if i not in cancel_month.value_counts().index]
-        miss_df = pd.Series(index=miss_months, data=[0, 0, 0])
+        miss_df = pd.Series(index=miss_months, data=[0] * len(miss_months))
 
         cancels = pd.concat([miss_df, cancel_month.value_counts()]).sort_index()
         starts = start_month.value_counts().sort_index().reindex(all_months, fill_value=0)
