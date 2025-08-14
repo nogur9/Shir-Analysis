@@ -4,7 +4,7 @@ from typing import Iterable, List, Optional
 import pandas as pd
 
 from consts import payment_customers_path, cust_id
-from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveDuplicates, RemoveNonPayments
+from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveNonPayments
 
 class FilteringHandler:
     """
@@ -15,8 +15,8 @@ class FilteringHandler:
         self.rules: List[ExclusionCriteria] = list(exclusion_rules or [])
         self.pay_df = pd.read_csv(payment_customers_path)
 
-        df['Email'] = df['Email'].str.lower()
-        df['Name'] = df['Name'].str.lower()
+        self.pay_df['Email'] = self.pay_df['Email'].str.lower()
+        self.pay_df['Name'] = self.pay_df['Name'].str.lower()
         self.pay_df[cust_id] = self.pay_df['Name'] + '-' + self.pay_df['Email']
 
     def add_rule(self, rule: ExclusionCriteria) -> "FilteringHandler":
@@ -51,7 +51,7 @@ class FilteringHandler:
 
 
 if __name__ == "__main__":
-    fh = FilteringHandler(exclusion_rules=[RemoveDuplicates(), RemoveTestInstances(), RemoveByStatus()])
+    fh = FilteringHandler(exclusion_rules=[RemoveTestInstances(), RemoveByStatus()])
     df = pd.read_csv("data/subscriptions.csv")
     clean_df = fh.filter(df)
     print(1)

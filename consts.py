@@ -1,8 +1,15 @@
 import os
 import datetime
-
 import pandas as pd
 
+
+# paths
+dup_handle_path =os.path.join("data", "handling duplicates.xlsx")
+duplicated_customers_path = "duplicates.csv"
+payment_customers_path = os.path.join("data", "payments.csv")
+
+
+# names
 email_col = 'Customer Email'
 name_col = 'Customer Name'
 customer_id_col = 'Customer ID'
@@ -10,12 +17,9 @@ canceled_at_col = "Canceled At (UTC)"
 ended_at_col = "Ended At (UTC)"
 start_at_col = "Start Date (UTC)"
 status_col = "Status"
-inclusion_data_path = None
-duplicated_customers_path = "duplicates.csv"
-payment_customers_path = os.path.join("data", "payments.csv")
 cust_id = "cust_id"
 
-
+# errors
 fixes = [{
     'email': 'mcbride.alan@gmail.com',
     'start_date': datetime.datetime.strptime("01/10/2023", "%d/%m/%Y")

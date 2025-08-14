@@ -1,10 +1,9 @@
-# churn_analysis.py (excerpt)
 from dataclasses import dataclass, field
-from typing import Iterable, Optional, Union
+from typing import Optional, Union, Tuple, Dict
 import pandas as pd
 from filtering_handler import FilteringHandler
 from consts import (start_at_col, canceled_at_col, ended_at_col,  email_col,
-                    name_col, status_col, new_cust, fixes)
+                    name_col, status_col, fixes)
 from consts import new_cust
 from utils.duplication_analysis import DuplicationAnalysis
 import numpy as np
@@ -16,15 +15,15 @@ from plotly.subplots import make_subplots
 class ChurnAnalyzer:
     # Columns
     end_col: str = "Canceled At (UTC)",   # or "Ended At (UTC)"
-
-    _df: Optional[pd.DataFrame] = None
     filtering: FilteringHandler = field(default_factory=FilteringHandler)
+    duplicates_analyser: Optional[DuplicationAnalysis] = None
+    started_custs: Optional[Dict] = None
+    canceled_custs: Optional[Dict] = None
+    _df: Optional[pd.DataFrame] = None
 
-    def __init__(self):
-        self.duplicates_analyser = None
 
     def load(self, source: Union[str, pd.DataFrame]) -> "ChurnAnalyzer":
-        df = pd.read_csv(source) if isinstance(source, str) else source.copy()
+        df = pd.read_csv(source).copy()
         self._assert(df)
         df[email_col] = df[email_col].str.lower()
         df[name_col] = df[name_col].str.lower()
@@ -67,16 +66,36 @@ class ChurnAnalyzer:
         return started_before and ended_after
 
 
+    def _get_data_per_month(self, df: pd.DataFrame, all_months):
+        started_custs = {}
+        canceled_custs = {}
+        actives_per_months = []
+
+        for month in all_months:
+            active_amount = df.apply(self.is_active, args=[month], axis=1)
+            actives_per_months.append(active_amount.sum())
+
+            started_custs[month] = df[df['start_month'] == month][['start_month', email_col, name_col]]
+            canceled_custs[month] = df[df['cancel_month'] == month][['cancel_month' ,email_col, name_col]]
+
+        self.started_custs = started_custs
+        self.canceled_custs = canceled_custs
+        return actives_per_months
+
+
     def _get_months_range(self, df: pd.DataFrame,
                           from_month: Optional[pd.Period] = None,
                           to_month: Optional[pd.Period] = None):
         # derive monthly periods
+        df['start_month'] = df[start_at_col].dt.to_period('M')
         start_month = df[start_at_col].dt.to_period("M")
-        end_month = df[self.end_col].dt.to_period("M")
+
+        df['cancel_month'] = df[self.end_col].dt.to_period('M')
+        cancel_month = df[self.end_col].dt.to_period("M")
 
         # bounds
         min_month = start_month.min()
-        max_month = pd.concat([start_month.dropna(), end_month.dropna()]).max()
+        max_month = pd.concat([start_month.dropna(), cancel_month.dropna()]).max()
 
         if from_month is None: from_month = min_month
         if to_month   is None: to_month   = max_month
@@ -86,7 +105,15 @@ class ChurnAnalyzer:
             "end": df['start_month'].max()
         }
         all_months = pd.period_range(analysis_range["start"], analysis_range["end"])
-        return start_month, end_month, all_months
+
+        # monthly histograms
+        miss_months = [i for i in start_month.value_counts().index if i not in cancel_month.value_counts().index]
+        miss_df = pd.Series(index=miss_months, data=[0, 0, 0])
+
+        cancels = pd.concat([miss_df, cancel_month.value_counts()]).sort_index()
+        starts = start_month.value_counts().sort_index().reindex(all_months, fill_value=0)
+        self._df = df
+        return cancels, starts, all_months
 
 
     # ---- New: business-friendly base + cancels + churn rate ----
@@ -111,17 +138,9 @@ class ChurnAnalyzer:
         - Applies FilteringHandler before computing metrics.
         """
         df = self.filtering.filter(self._df)
-        start_month, end_month, all_months = self._get_months_range(df, from_month, to_month)
-        first_cancel = pd.Series(index=[pd.to_datetime('2023-09').to_period('M')], data=[0])
+        cancels, starts, all_months = self._get_months_range(df, from_month, to_month)
 
-        # monthly histograms
-        starts = start_month.value_counts().sort_index().reindex(all_months, fill_value=0)
-        cancels = pd.concat([first_cancel, df.cancel_month.value_counts()]).sort_index()
-
-        actives_per_months = []
-        for month in starts.index:
-            active_amount = df.apply(self.is_active, args=[month], axis=1)
-            actives_per_months.append(active_amount.sum())
+        actives_per_months = self._get_data_per_month(df, all_months)
 
         out = pd.DataFrame({
             "Month": starts.index,
@@ -131,10 +150,13 @@ class ChurnAnalyzer:
         })
 
         out['Churn_Rate'] = (out["Cancels"] / out["Actives"])
+        out = out.sort_values("Month")
         return out
 
-    def get_df(self) -> pd.DataFrame:
-        return self.filtering.filter(self._df)
+    def get_data(self) -> Tuple[pd.DataFrame, Dict, Dict]:
+        return (self.filtering.filter(self._df),
+                self.started_custs,
+                self.canceled_custs)
 
 
     def plot_full_monthly_churn_summary_full(self, summary_df: Optional[pd.DataFrame] = None):
@@ -148,7 +170,7 @@ class ChurnAnalyzer:
         churn_rate = summary_df["Churn_Rate"].astype(float)  # Float64 -> float
         churn_rate = churn_rate.where(np.isfinite(churn_rate))  # keep NaN for gaps
 
-        x = summary_df["Month"]
+        x = summary_df["Month"].astype(str)
 
         fig = make_subplots(
             specs=[[{"secondary_y": True}]],
@@ -177,7 +199,6 @@ class ChurnAnalyzer:
             secondary_y=True,
         )
 
-
         fig.add_bar(name="Cancels", x=x, y=summary_df["Cancels"])
         fig.add_bar(name="Starts", x=x, y=summary_df["Starts"])
         # Optional: annotate churn rate on top
@@ -192,7 +213,7 @@ class ChurnAnalyzer:
         if summary_df is None:
             summary_df = self.compute_monthly_churn_summary()
 
-        x = summary_df["Month"]
+        x = summary_df["Month"].astype(str)
         fig = go.Figure()
         fig.add_bar(name="Cancels", x=x, y=summary_df["Cancels"])
         fig.add_bar(name="Starts", x=x, y=summary_df["Starts"])
@@ -213,7 +234,7 @@ class ChurnAnalyzer:
         churn_rate = summary_df["Churn_Rate"].astype(float)  # Float64 -> float
         churn_rate = churn_rate.where(np.isfinite(churn_rate))  # keep NaN for gaps
 
-        x = summary_df["Month"]
+        x = summary_df["Month"].astype(str)
 
         fig = make_subplots(
             specs=[[{"secondary_y": True}]],

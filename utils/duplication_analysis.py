@@ -2,7 +2,7 @@ import pandas as pd
 from consts import email_col, name_col
 from exclusion_criteria import RemoveTestInstances
 from filtering_handler import FilteringHandler
-from consts import duplicated_customers_path, canceled_at_col, start_at_col
+from consts import duplicated_customers_path, canceled_at_col, start_at_col, dup_handle_path
 from collections import defaultdict
 
 
@@ -21,7 +21,7 @@ class DuplicationAnalysis:
         if create:
             self.duplications_guide = self.assign_duplicate_group_ids()
         else:
-            dup_handler = pd.read_excel("../data/handling duplicates.xlsx")
+            dup_handler = pd.read_excel(dup_handle_path)
             self.guide = dup_handler.groupby("group_id")["Unnamed: 3"].apply(lambda x: x[x != ""].iloc[0]).to_dict()
 
     def collapse_duplicate_groups(self,
