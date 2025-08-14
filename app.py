@@ -62,13 +62,20 @@ with tabs[2]:
 
 
 churn_df, started_custs, canceled_custs = churn_analyser.get_data()
+# Cumulative sum (sum of all previous + current)
+summary["Sum Started"] = summary["Starts"].expanding().sum()
+summary["Sum Canceled"] = summary["Cancels"].expanding().sum()
+summary["Average Churn Rate"] = summary["Churn_Rate"].expanding().mean()
 
 with st.expander("Diagnostics"):
     st.write("Number Of Instances:", churn_df.shape[0])
     st.dataframe(summary, use_container_width=True)
 
 with st.expander("Describe"):
-    summary.describe()
+    st.write("Descriptive", churn_df.shape[0])
+
+    st.dataframe(summary.describe(), use_container_width=True)
+
 
 with st.expander("Cancelled List:"):
     for month in canceled_custs.keys():
