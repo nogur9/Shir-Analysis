@@ -1,10 +1,4 @@
-# exclusion_criteria.py
 from abc import ABC, abstractmethod
-from typing import Any
-from consts import duplicated_customers_path
-
-import pandas as pd
-import datetime
 from consts import *
 
 
