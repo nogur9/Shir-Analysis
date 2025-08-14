@@ -56,7 +56,7 @@ class RemoveNonPayments(ExclusionCriteria):
     def filter(self, row: pd.Series, pay_df, *args) -> bool:
         pay_dict = pay_df[['cust_id', 'Total Spend']].to_dict(orient='tight', index=False)
         pay_map = {i[0]: i[1] for i in pay_dict['data']}
-        spent = pay_map['cust_id']
+        spent = pay_map[row['cust_id']]
         return spent < self.min_payment
 
 
