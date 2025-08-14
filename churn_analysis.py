@@ -9,6 +9,7 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+
 @dataclass
 class ChurnAnalyzer:
     # Columns
@@ -22,14 +23,14 @@ class ChurnAnalyzer:
         self._assert(df)
         df[email_col] = df[email_col].str.lower()
         df[name_col] = df[name_col].str.lower()
+        df['cust_id'] = df[email_col] + '-' + df[name_col]
 
-        DuplicationAnalysis(df=df, write_at_init=True)
+        DuplicationAnalysis(df=df)
 
         for col in [start_at_col, canceled_at_col, ended_at_col]:
             if col in df.columns:
                 df[col] = pd.to_datetime(df[col], errors="coerce")
         self._df = df
-
         return self
 
 

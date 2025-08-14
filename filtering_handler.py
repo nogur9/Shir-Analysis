@@ -2,7 +2,9 @@
 from __future__ import annotations
 from typing import Iterable, List, Optional
 import pandas as pd
-from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveDuplicates
+
+from consts import payment_customers_path, cust_id
+from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveDuplicates, RemoveNonPayments
 
 class FilteringHandler:
     """
@@ -11,6 +13,11 @@ class FilteringHandler:
     """
     def __init__(self, exclusion_rules: Optional[Iterable[ExclusionCriteria]] = None):
         self.rules: List[ExclusionCriteria] = list(exclusion_rules or [])
+        self.pay_df = pd.read_csv(payment_customers_path)
+
+        df['Email'] = df['Email'].str.lower()
+        df['Name'] = df['Name'].str.lower()
+        self.pay_df[cust_id] = self.pay_df['Name'] + '-' + self.pay_df['Email']
 
     def add_rule(self, rule: ExclusionCriteria) -> "FilteringHandler":
         self.rules.append(rule)
@@ -31,7 +38,10 @@ class FilteringHandler:
         # Default path: row-wise .apply using rule.filter(row)->bool
         # (If you later add vectorized rules, you can override to return a boolean Series directly.)
         for rule in self.rules:
-            exclude_mask = df.apply(rule.filter, axis=1)
+            if type(rule) ==  RemoveNonPayments:
+                exclude_mask = df.apply(lambda x: rule.filter(x, self.pay_df), axis=1)
+            else:
+                exclude_mask = df.apply(rule.filter, axis=1)
             if not isinstance(exclude_mask, pd.Series) or exclude_mask.dtype != bool:
                 raise ValueError(f"Rule {rule.__class__.__name__} must return a boolean per row.")
             keep_mask &= ~exclude_mask

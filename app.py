@@ -1,7 +1,8 @@
 import streamlit as st
 from churn_analysis import ChurnAnalyzer
 from filtering_handler import FilteringHandler
-from exclusion_criteria import RemoveTestInstances, RemoveSpecificCustomers, RemoveByStatus, RemoveShortPeriod, RemoveDuplicates
+from exclusion_criteria import (RemoveTestInstances, RemoveSpecificCustomers, RemoveByStatus,
+                                RemoveShortPeriod, RemoveDuplicates, RemoveNonPayments)
 from consts import start_at_col, canceled_at_col, ended_at_col
 
 
@@ -22,6 +23,7 @@ enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", va
 enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances", value=False)
 enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=False)
 enable_remove_duplicates = st.sidebar.checkbox("Exclude duplicated instances", value=False)
+enable_remove_non_payments = st.sidebar.checkbox("Exclude customers paid < 60", value=False)
 
 
 id_col = st.sidebar.text_input("ID column (for explicit removals)", value="Customer ID")
@@ -42,6 +44,8 @@ if enable_remove_duplicates:
     rules.append(RemoveDuplicates())
 if ids_to_remove and id_col:
     rules.append(RemoveSpecificCustomers(ids_to_remove=ids_to_remove))
+if enable_remove_non_payments:
+    rules.append(RemoveNonPayments())
 
 fh = FilteringHandler(rules)
 

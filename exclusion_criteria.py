@@ -1,21 +1,25 @@
 # exclusion_criteria.py
 from abc import ABC, abstractmethod
+from typing import Any
+from consts import duplicated_customers_path
+
 import pandas as pd
 import datetime
 from consts import *
 
 
+
 class ExclusionCriteria(ABC):
     """Return True for rows that should be EXCLUDED."""
     @abstractmethod
-    def filter(self, row: pd.Series) -> bool:
+    def filter(self, row: pd.Series, *args) -> bool:
         raise NotImplementedError
 
 
 class RemoveTestInstances(ExclusionCriteria):
     """Exclude customers with 'shir' in name/email, except one email."""
     exceptions = ["kshirjarohannaik@gmail.com"]
-    def filter(self, row: pd.Series) -> bool:
+    def filter(self, row: pd.Series, *args) -> bool:
         # Guard for missing cols
         em = str(row.get(email_col, "") or "")
         nm = str(row.get(name_col, "") or "")
@@ -25,7 +29,11 @@ class RemoveTestInstances(ExclusionCriteria):
         return ("shir" in em.lower()) or ("shir" in nm.lower())
 
 class RemoveDuplicates(ExclusionCriteria):
-    def filter(self, row: pd.Series) -> bool:
+    from utils.duplication_analysis import DuplicationAnalysis
+
+    def filter(self, row: pd.Series, dup_analyser:DuplicationAnalysis, *args) -> bool:
+
+
         def in_inclusion(_row, _inclusion_df, _customer_id):
             cust = _inclusion_df[_inclusion_df['customer_id'] == _customer_id].iloc[0]
             if (cust[start_at_col] == _row[start_at_col]) and \
@@ -60,13 +68,13 @@ class RemoveDuplicates(ExclusionCriteria):
 
 class RemoveShortPeriod(ExclusionCriteria):
     min_durance = 30 # days
-    def filter(self, row: pd.Series) -> bool:
+    def filter(self, row: pd.Series, *args) -> bool:
         delta = row['Canceled At (UTC)'] - row['Start Date (UTC)']
         return delta < datetime.timedelta(self.min_durance)
 
 class RemoveByStatus(ExclusionCriteria):
     irrelevant_status = ['trialing', 'incomplete_expired']
-    def filter(self, row: pd.Series) -> bool:
+    def filter(self, row: pd.Series, *args) -> bool:
         return row[status_col] in self.irrelevant_status
 
 
@@ -75,9 +83,20 @@ class RemoveSpecificCustomers(ExclusionCriteria):
     def __init__(self, ids_to_remove: list[str] | None = None):
         self.ids_to_remove = set(map(str, ids_to_remove or []))
 
-    def filter(self, row: pd.Series) -> bool:
+    def filter(self, row: pd.Series, *args) -> bool:
         val = str(row.get(customer_id_col, "") or "")
         return val in self.ids_to_remove
+
+
+class RemoveNonPayments(ExclusionCriteria):
+    min_payment = 60
+    def filter(self, row: pd.Series, pay_df, *args) -> bool:
+        pay_dict = pay_df[['cust_id', 'Total Spend']].to_dict(orient='tight', index=False)
+        pay_map = {i[0]: i[1] for i in pay_dict['data']}
+        spent = pay_map['cust_id']
+        return spent < self.min_payment
+
+
 
 
 """
