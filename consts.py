@@ -4,9 +4,9 @@ import pandas as pd
 
 
 # paths
-dup_handle_path =os.path.join("data", "handling duplicates.xlsx")
+dup_handle_path ="handling duplicates.xlsx"
 duplicated_customers_path = "duplicates.csv"
-payment_customers_path = os.path.join("data", "payments.csv")
+payment_customers_path = "payments.csv"
 
 
 # names

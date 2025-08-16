@@ -39,7 +39,7 @@ class FilteringHandler:
         # (If you later add vectorized rules, you can override to return a boolean Series directly.)
         for rule in self.rules:
             if type(rule) ==  RemoveNonPayments:
-                exclude_mask = df.apply(lambda x: rule.filter(x, self.pay_df), axis=1)
+                 exclude_mask = df.apply(lambda x: rule.filter(x, self.pay_df), axis=1)
             else:
                 exclude_mask = df.apply(rule.filter, axis=1)
             if not isinstance(exclude_mask, pd.Series) or exclude_mask.dtype != bool:

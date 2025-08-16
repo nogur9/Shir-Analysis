@@ -5,7 +5,7 @@ from filtering_handler import FilteringHandler
 from consts import (start_at_col, canceled_at_col, ended_at_col,  email_col,
                     name_col, status_col, fixes)
 from consts import new_cust
-from utils.duplication_analysis import DuplicationAnalysis
+from duplication_analysis import DuplicationAnalysis
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
