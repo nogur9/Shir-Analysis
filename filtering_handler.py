@@ -52,6 +52,6 @@ class FilteringHandler:
 
 if __name__ == "__main__":
     fh = FilteringHandler(exclusion_rules=[RemoveTestInstances(), RemoveByStatus()])
-    df = pd.read_csv("data/subscriptions.csv")
+    df = pd.read_csv("subscriptions.csv")
     clean_df = fh.filter(df)
     print(1)

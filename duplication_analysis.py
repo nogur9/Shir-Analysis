@@ -136,7 +136,7 @@ class DuplicationAnalysis:
 
 
 if __name__ == "__main__":
-    df = pd.read_csv("data/subscriptions.csv")
+    df = pd.read_csv("subscriptions.csv")
 
     da = DuplicationAnalysis(df, write_at_init=False)
     da.load()

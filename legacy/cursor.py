@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the data
-df = pd.read_csv('../data/subscriptions.csv')
+df = pd.read_csv('../subscriptions.csv')
 
 # Parse date columns
 df['Canceled At (UTC)'] = pd.to_datetime(df['Canceled At (UTC)'], errors='coerce')
