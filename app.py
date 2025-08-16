@@ -13,10 +13,10 @@ st.title("Churn Dashboard")
 source = "data/subscriptions.csv"
 
 st.sidebar.header("Filters")
-enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=False)
-enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances", value=False)
+enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=True)
+enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances", value=True)
 enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=True)
-enable_remove_non_payments = st.sidebar.checkbox("Exclude customers paid < 60", value=False)
+enable_remove_non_payments = st.sidebar.checkbox("Exclude customers paid < 60", value=True)
 
 
 id_col = st.sidebar.text_input("ID column (for explicit removals)", value="Customer ID")
@@ -62,6 +62,12 @@ with tabs[2]:
 
 
 churn_df, started_custs, canceled_custs = churn_analyser.get_data()
+coll = []
+for month in canceled_custs.keys():
+    coll.append(canceled_custs[month])
+pd.concat(coll).to_csv("canceled.csv", index=0)
+
+
 # Cumulative sum (sum of all previous + current)
 summary["Sum Started"] = summary["Starts"].expanding().sum()
 summary["Sum Canceled"] = summary["Cancels"].expanding().sum()

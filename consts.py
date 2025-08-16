@@ -22,12 +22,29 @@ cust_id = "cust_id"
 # errors
 fixes = [{
     'email': 'mcbride.alan@gmail.com',
-    'start_date': datetime.datetime.strptime("01/10/2023", "%d/%m/%Y")
-},
+    'start_date': datetime.datetime.strptime("01/10/2023", "%d/%m/%Y"),
+    'end_date': pd.NaT
+    },
     {
-        'email': 'loredanamirea05@yahoo.com	', # name = gabriel amariutei
-        'end_date': datetime.datetime.strptime("01/08/2025", "%d/%m/%Y")
-    }
+        'email': 'loredanamirea05@yahoo.com', # name = gabriel amariutei
+        'end_date': pd.NaT #datetime.datetime.strptime("01/08/2025", "%d/%m/%Y")
+    },
+    {
+        'email': 'skravin@rediffmail.com',
+        'end_date': pd.NaT
+    },
+    {
+        'email': 'mertiti@gmail.com', #avinoam gal
+        'end_date': pd.NaT
+    },
+    {
+        'email': 'nicolerabiespeech@gmail.com',
+        'end_date': pd.NaT
+    },
+    {
+        'email': 'briansamuelwalker@yahoo.co.uk',
+        'end_date': pd.NaT
+    },
 ]
 
 new_cust = {
@@ -37,3 +54,8 @@ new_cust = {
     ended_at_col: pd.NaT,
     canceled_at_col: pd.NaT
 }
+
+# 2024-06	mertiti@gmail.com	avinoam gal - Didn't Quit
+# 2024-11	skravin@rediffmail.com	sathish ravindran - Didn't Quit
+# 2025-05	nicolerabiespeech@gmail.com	daniel rabie - Didn't Quit
+# 2025-05	mcbride.alan@gmail.com	mr alan mcbride - Didn't Quit

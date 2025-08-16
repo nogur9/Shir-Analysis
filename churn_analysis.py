@@ -27,24 +27,27 @@ class ChurnAnalyzer:
         self._assert(df)
         df[email_col] = df[email_col].str.lower()
         df[name_col] = df[name_col].str.lower()
-        df['cust_id'] = df[email_col] + '-' + df[name_col]
+        df = self.fix_and_add(df)
+
+        df['cust_id'] = df[name_col] + '-' + df[email_col]
+
 
         for col in [start_at_col, canceled_at_col, ended_at_col]:
             if col in df.columns:
                 df[col] = pd.to_datetime(df[col], errors="coerce")
         self.duplicates_analyser = DuplicationAnalysis(df=df, end_col=self.end_col)
         self._df = self.duplicates_analyser.handle_duplications()
-        self._df = self.fix_and_add()
+
         return self
 
-    def fix_and_add(self):
-        df = self._df.copy()
+    def fix_and_add(self, df):
         df_new_cust = pd.DataFrame([new_cust])
         for cust in fixes:
             if 'start_date' in cust.keys():
                 df.loc[df[email_col] == cust['email'], start_at_col] = cust['start_date']
             elif 'end_date' in cust.keys():
                 df.loc[df[email_col] == cust['email'], ended_at_col] = cust['end_date']
+                df.loc[df[email_col] == cust['email'], canceled_at_col] = cust['end_date']
 
         return pd.concat([df, df_new_cust])
 
