@@ -57,6 +57,48 @@ class RemoveNonPayments(ExclusionCriteria):
             return False
 
 
+class RemoveByLessonType(ExclusionCriteria):
+    def __init__(self, l_type):
+        super().__init__()
+        self.l_type = l_type
+
+    def filter(self, row: pd.Series) -> bool:
+        if row['Lesson'] is None:
+            return True
+        return row['Lesson'].class_type != self.l_type
+
+
+class RemoveByDuration(ExclusionCriteria):
+    def __init__(self, min_dur, max_dur):
+        super().__init__()
+        self.min_dur = min_dur
+        self.max_dur = max_dur
+
+    def filter(self, row: pd.Series) -> bool:
+        if row['Lesson'] is None:
+            return True
+        return (row['Lesson'].months < self.min_dur) or (row['Lesson'].months > self.max_dur)
+
+
+class RemoveByWeekTimes(ExclusionCriteria):
+    def __init__(self, times):
+        super().__init__()
+        self.times = times
+
+    def filter(self, row: pd.Series) -> bool:
+        if row['Lesson'] is None:
+            return True
+        return row['Lesson'].times != self.times
+
+
+class RemoveByAmount(ExclusionCriteria):
+    def __init__(self, min_amount, max_amount):
+        super().__init__()
+        self.min_amount = min_amount
+        self.max_amount = max_amount
+
+    def filter(self, row: pd.Series) -> bool:
+        return (row['Amount'] < self.min_amount) or (row['Amount'] > self.max_amount)
 
 
 """

@@ -8,6 +8,7 @@ dup_handle_path ="handling duplicates.xlsx"
 duplicated_customers_path = "duplicates.csv"
 payment_customers_path = "payments.csv"
 
+sub = "data/subscriptions_new.csv"
 
 # names
 email_col = 'Customer Email'

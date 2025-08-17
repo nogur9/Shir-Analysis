@@ -3,8 +3,10 @@ from __future__ import annotations
 from typing import Iterable, List, Optional
 import pandas as pd
 
-from consts import payment_customers_path, cust_id
+from consts import payment_customers_path, cust_id, email_col, name_col
 from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveNonPayments
+from lesson_types import find_class_type
+
 
 class FilteringHandler:
     """
@@ -19,6 +21,12 @@ class FilteringHandler:
         self.pay_df['Name'] = self.pay_df['Name'].str.lower()
         self.pay_df[cust_id] = self.pay_df['Name'] + '-' + self.pay_df['Email']
 
+
+    def apply_lesson_types(self, df: pd.DataFrame):
+        df['Lesson'] = df['Amount'].apply(find_class_type)
+        return df
+
+
     def add_rule(self, rule: ExclusionCriteria) -> "FilteringHandler":
         self.rules.append(rule)
         return self
@@ -30,6 +38,9 @@ class FilteringHandler:
     def filter(self, df: pd.DataFrame) -> pd.DataFrame:
         if not self.rules or df.empty:
             return df
+        df = df.copy()
+        df = self.apply_lesson_types(df)
+
 
         # Start with "include everything"
         keep_mask = pd.Series(True, index=df.index)

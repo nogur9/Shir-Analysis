@@ -9,7 +9,7 @@ from duplication_analysis import DuplicationAnalysis
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-
+import datetime
 
 @dataclass
 class ChurnAnalyzer:
@@ -35,6 +35,10 @@ class ChurnAnalyzer:
         for col in [start_at_col, canceled_at_col, ended_at_col]:
             if col in df.columns:
                 df[col] = pd.to_datetime(df[col], errors="coerce")
+
+        df = df[df[start_at_col] <= datetime.datetime.strptime("31/7/2025", "%d/%m/%Y")]
+        df.loc[df[canceled_at_col] > datetime.datetime.strptime("31/7/2025", "%d/%m/%Y"), canceled_at_col] = pd.NaT
+        df.loc[df[ended_at_col] > datetime.datetime.strptime("31/7/2025", "%d/%m/%Y"), ended_at_col] = pd.NaT
         self.duplicates_analyser = DuplicationAnalysis(df=df, end_col=self.end_col)
         self._df = self.duplicates_analyser.handle_duplications()
 
@@ -110,11 +114,17 @@ class ChurnAnalyzer:
         all_months = pd.period_range(analysis_range["start"], analysis_range["end"])
 
         # monthly histograms
-        miss_months = [i for i in start_month.value_counts().index if i not in cancel_month.value_counts().index]
-        miss_df = pd.Series(index=miss_months, data=[0] * len(miss_months))
+        cn_miss_months = [i for i in all_months if i not in cancel_month.value_counts().index]
+        cn_miss_df = pd.Series(index=cn_miss_months, data=[0] * len(cn_miss_months))
 
-        cancels = pd.concat([miss_df, cancel_month.value_counts()]).sort_index()
-        starts = start_month.value_counts().sort_index().reindex(all_months, fill_value=0)
+        # monthly histograms
+        st_miss_months = [i for i in all_months if i not in start_month.value_counts().index]
+        st_miss_df = pd.Series(index=st_miss_months, data=[0] * len(st_miss_months))
+
+
+        cancels = pd.concat([cn_miss_df, cancel_month.value_counts()]).sort_index()
+        starts = pd.concat([st_miss_df, start_month.value_counts()]).sort_index()
+
         self._df = df
         return cancels, starts, all_months
 

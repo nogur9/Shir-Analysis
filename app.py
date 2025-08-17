@@ -3,14 +3,15 @@ import streamlit as st
 from churn_analysis import ChurnAnalyzer
 from filtering_handler import FilteringHandler
 from exclusion_criteria import (RemoveTestInstances, RemoveSpecificCustomers, RemoveByStatus,
-                                RemoveShortPeriod, RemoveNonPayments)
+                                RemoveShortPeriod, RemoveNonPayments, RemoveByDuration, RemoveByAmount,
+                                RemoveByWeekTimes, RemoveByLessonType)
 from consts import start_at_col, canceled_at_col, ended_at_col
 
 
 st.set_page_config(page_title="Churn Dashboard", layout="wide")
 st.title("Churn Dashboard")
 
-source = "subscriptions.csv"
+source = r"data/subscriptions_new.csv"
 
 st.sidebar.header("Filters")
 enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=True)
@@ -18,25 +19,37 @@ enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances
 enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=True)
 enable_remove_non_payments = st.sidebar.checkbox("Exclude customers paid < 60", value=True)
 
+min_dur_months, max_dur_months = st.sidebar.slider("Filter by Months", min_value=0, max_value=13,
+                                                   value=(0, 13))
+min_amount, max_amount = st.sidebar.slider("Filter by Amount", min_value=60, max_value=2000,
+                                           value=(60, 2000))
+times_a_week = st.sidebar.selectbox("Weekly Times", ['all', 1, 2], index=0)
+l_type = st.sidebar.selectbox("Lesson Type", ['all', 'Group', 'Private'], index=2)
 
-id_col = st.sidebar.text_input("ID column (for explicit removals)", value="Customer ID")
-ids_to_remove_txt = st.sidebar.text_area("IDs to remove (one per line)", value="")
-ids_to_remove = [s.strip() for s in ids_to_remove_txt.splitlines() if s.strip()]
+# id_col = st.sidebar.text_input("ID column (for explicit removals)", value="Customer ID")
+# ids_to_remove_txt = st.sidebar.text_area("IDs to remove (one per line)", value="")
+# ids_to_remove = [s.strip() for s in ids_to_remove_txt.splitlines() if s.strip()]
 
 ending_column = st.sidebar.selectbox(label = "select canceled column", options=[canceled_at_col, ended_at_col])
 
 # Build FilteringHandler dynamically
-rules = []
+rules = [
+    RemoveByAmount(min_amount, max_amount),
+    RemoveByDuration(min_dur_months, max_dur_months)
+]
 if enable_test_instances:
     rules.append(RemoveTestInstances())
 if enable_remove_short_period:
     rules.append(RemoveShortPeriod())
 if enable_remove_by_status:
     rules.append(RemoveByStatus())
-if ids_to_remove and id_col:
-    rules.append(RemoveSpecificCustomers(ids_to_remove=ids_to_remove))
 if enable_remove_non_payments:
     rules.append(RemoveNonPayments())
+if times_a_week != 'all':
+    rules.append(RemoveByWeekTimes(times_a_week))
+if l_type != 'all':
+    rules.append(RemoveByLessonType(l_type))
+
 
 fh = FilteringHandler(rules)
 
