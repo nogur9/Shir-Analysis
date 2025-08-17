@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Iterable, List, Optional
 import pandas as pd
 
-from consts import payment_customers_path, cust_id, email_col, name_col
+from consts import payment_customers_path, cust_id, email_col, name_col, new_payment_customers_path
 from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveNonPayments
 from lesson_types import find_class_type
 
@@ -22,7 +22,17 @@ class FilteringHandler:
         self.pay_df[cust_id] = self.pay_df['Name'] + '-' + self.pay_df['Email']
 
 
+
+        self.new_pay_df = pd.read_csv(new_payment_customers_path)
+
+        self.new_pay_df[email_col] = self.new_pay_df[email_col].str.lower()
+        self.new_pay_df[name_col] = self.new_pay_df[name_col].str.lower()
+        self.new_pay_df[cust_id] = self.new_pay_df[name_col] + '-' + self.new_pay_df[email_col]
+
     def apply_lesson_types(self, df: pd.DataFrame):
+        amount_dict = self.new_pay_df[[cust_id, 'Amount']].to_dict(orient='tight', index=False)
+        amount_map = {i[0]: i[1] for i in amount_dict['data']}
+        df['Amount'] = df[cust_id].map(amount_map)
         df['Lesson'] = df['Amount'].apply(find_class_type)
         return df
 

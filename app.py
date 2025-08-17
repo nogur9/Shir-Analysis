@@ -11,7 +11,7 @@ from consts import start_at_col, canceled_at_col, ended_at_col
 st.set_page_config(page_title="Churn Dashboard", layout="wide")
 st.title("Churn Dashboard")
 
-source = r"data/subscriptions_new.csv"
+source = r"subscriptions.csv"
 
 st.sidebar.header("Filters")
 enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=True)

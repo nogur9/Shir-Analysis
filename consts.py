@@ -8,7 +8,7 @@ dup_handle_path ="handling duplicates.xlsx"
 duplicated_customers_path = "duplicates.csv"
 payment_customers_path = "payments.csv"
 
-sub = "data/subscriptions_new.csv"
+new_payment_customers_path = "data/subscriptions_new.csv"
 
 # names
 email_col = 'Customer Email'
@@ -60,3 +60,7 @@ new_cust = {
 # 2024-11	skravin@rediffmail.com	sathish ravindran - Didn't Quit
 # 2025-05	nicolerabiespeech@gmail.com	daniel rabie - Didn't Quit
 # 2025-05	mcbride.alan@gmail.com	mr alan mcbride - Didn't Quit
+
+
+# remove - MR B S WALKER
+# remove - Ola Khadijah

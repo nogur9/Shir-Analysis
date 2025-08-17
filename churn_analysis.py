@@ -108,8 +108,8 @@ class ChurnAnalyzer:
         if to_month   is None: to_month   = max_month
 
         analysis_range = {
-            "start": df['start_month'].min(),
-            "end": df['start_month'].max()
+            "start": min(df['start_month'].min(), df['cancel_month'].min()),
+            "end": max(df['start_month'].max(), df['cancel_month'].max())
         }
         all_months = pd.period_range(analysis_range["start"], analysis_range["end"])
 
