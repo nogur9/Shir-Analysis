@@ -4,11 +4,11 @@ import pandas as pd
 
 
 # paths
-dup_handle_path ="handling duplicates.xlsx"
+dup_handle_path = "handling_duplicates.xlsx"
 duplicated_customers_path = "duplicates.csv"
 payment_customers_path = "payments.csv"
 
-new_payment_customers_path = "data/subscriptions_new.csv"
+new_payment_customers_path = "subscriptions_new.csv"
 
 # names
 email_col = 'Customer Email'

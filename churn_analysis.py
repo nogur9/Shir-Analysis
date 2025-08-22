@@ -46,7 +46,7 @@ class ChurnAnalyzer:
         df = self.filtering.load(df)
         self.duplicates_analyser = DuplicationAnalysis(df=df, end_col=self.end_col)
         self._df = self.duplicates_analyser.handle_duplications()
-        self.monthly_payment_df = self.build_payments_monthly(self.filtering.new_pay_df, df)
+        self.cm = self.build_payments_monthly(self.filtering.new_pay_df, df)
         return self
 
     # Assumptions about columns; rename if yours differ
@@ -191,8 +191,8 @@ class ChurnAnalyzer:
             active_amount = df.apply(self.is_active, args=[month], axis=1)
             actives_per_months.append(active_amount.sum())
 
-            started_custs[month] = df[df['start_month'] == month][['start_month', email_col, name_col]]
-            canceled_custs[month] = df[df['cancel_month'] == month][['cancel_month' ,email_col, name_col]]
+            started_custs[month] = df[df['start_month'] == month][['start_month', email_col, name_col, 'cust_id']]
+            canceled_custs[month] = df[df['cancel_month'] == month][['cancel_month' ,email_col, name_col, 'cust_id']]
 
         self.started_custs = started_custs
         self.canceled_custs = canceled_custs
@@ -272,8 +272,93 @@ class ChurnAnalyzer:
         })
 
         out['Churn_Rate'] = (out["Cancels"] / out["Actives"])
+        avg_monthly_rev, rev_by_month = self.average_monthly_revenue()
+
+        out["rev_by_month"] = rev_by_month
+
         out = out.sort_values("Month")
+
         return out
+
+
+    def average_monthly_revenue(self):
+        rev_by_month = self.cm.groupby("month")["monthly_price"].sum()
+        return rev_by_month.mean(), rev_by_month
+
+    import pandas as pd
+
+    def churned_revenue_rrl(
+            self,
+            canceled_custs: dict,
+            cust_col: str = "cust_id",
+            month_col: str = "month",
+            price_col: str = "monthly_price",
+            bill_timing: str = "in_advance",  # "in_advance" -> loss next month; "in_arrears" -> loss same month
+    ):
+        """
+        Compute Recurring Revenue Lost (RRL) by month, given:
+          - cm: customer×month table with a row per active month and the price in effect
+          - canceled_custs: {Timestamp('YYYY-MM-01'): [cust_id, ...], ...}
+
+        Returns:
+          total_rrl, rrl_by_month (DataFrame with ['loss_month','churned_rrl'])
+        """
+
+        # 1) Build a (customer, cancel_month) DataFrame from your dict
+        #    Ensure month is normalized to month-begin Timestamp (ns):
+        cancel_rows = []
+        for m, custs in canceled_custs.items():
+            m_norm = m.to_timestamp()
+
+            for cid in custs:
+                cancel_rows.append({cust_col: cid, "cancel_month": m_norm})
+        cancels = pd.DataFrame(cancel_rows)
+        if cancels.empty:
+            return 0.0, pd.DataFrame(columns=["loss_month", "churned_rrl"])
+
+        # 2) Join cm to bring in each customer's monthly prices
+        #    We'll match each cancel record to all months for that customer, then filter to months <= cancel_month
+        cm_sub = self.cm[[cust_col, month_col, price_col]].copy()
+        cancels = cancels.merge(cm_sub, on=cust_col, how="left")
+
+        # 3) Keep only the months at or before the cancel month
+        cancels = cancels[cancels[month_col] <= cancels["cancel_month"]]
+
+        # If a customer somehow has no price history up to cancel (data gap), drop or impute 0
+        if cancels.empty:
+            return 0.0, pd.DataFrame(columns=["loss_month", "churned_rrl"])
+
+        # 4) For each (customer, cancel_month), take the *last* (max) month row ⇒ last known price at/ before cancel
+        cancels = cancels.sort_values([cust_col, "cancel_month", month_col])
+        last_price_at_cancel = (
+            cancels.groupby([cust_col, "cancel_month"], as_index=False)
+            .tail(1)[[cust_col, "cancel_month", price_col]]
+        )
+
+        # 5) Decide which month gets the loss
+        if bill_timing == "in_advance":
+            # customers pay at the beginning of the month ⇒ losing them affects the *next* month’s recurring revenue
+            last_price_at_cancel["loss_month"] = (
+                    last_price_at_cancel["cancel_month"] + pd.offsets.MonthBegin(1)
+            )
+        elif bill_timing == "in_arrears":
+            # billed at the end of the month ⇒ losing them affects the *same* month
+            last_price_at_cancel["loss_month"] = last_price_at_cancel["cancel_month"]
+        else:
+            raise ValueError("bill_timing must be 'in_advance' or 'in_arrears'")
+
+        # 6) Aggregate
+        rrl_by_month = (
+            last_price_at_cancel.groupby("loss_month")[price_col]
+            .sum()
+            .rename("churned_rrl")
+            .reset_index()
+            .sort_values("loss_month")
+        )
+        rrl_by_month["loss_month"] = rrl_by_month["loss_month"].dt.to_period('M').dt.to_timestamp()
+        total_rrl = float(rrl_by_month["churned_rrl"].sum())
+
+        return total_rrl, rrl_by_month
 
     def get_data(self) -> Tuple[pd.DataFrame, Dict, Dict]:
         return (self.filtering.filter(self._df),

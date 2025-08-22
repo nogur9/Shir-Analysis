@@ -75,16 +75,26 @@ with tabs[2]:
 
 
 churn_df, started_custs, canceled_custs = churn_analyser.get_data()
+churned_revenue = churn_analyser.churned_revenue_rrl(canceled_custs)
+
+with st.expander("churned_revenue"):
+    st.dataframe(churned_revenue, use_container_width=True)
+
 coll = []
 for month in canceled_custs.keys():
     coll.append(canceled_custs[month])
-pd.concat(coll).to_csv("canceled.csv", index=0)
+#pd.concat(coll).to_csv("canceled.csv", index=0)
 
 
 # Cumulative sum (sum of all previous + current)
 summary["Sum Started"] = summary["Starts"].expanding().sum()
 summary["Sum Canceled"] = summary["Cancels"].expanding().sum()
 summary["Average Churn Rate"] = summary["Churn_Rate"].expanding().mean()
+
+#
+# churn_analyser._df.to_csv("total_data.csv", index=0)
+# churn_analyser.cm.to_csv("monthly_data.csv", index=0)
+# summary.to_csv("summary_data.csv", index=0)
 
 with st.expander("Diagnostics"):
     st.write("Number Of Instances:", churn_df.shape[0])
