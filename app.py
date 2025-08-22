@@ -75,10 +75,10 @@ with tabs[2]:
 
 
 churn_df, started_custs, canceled_custs = churn_analyser.get_data()
-churned_revenue = churn_analyser.churned_revenue_rrl(canceled_custs)
+_, churned_revenue = churn_analyser.churned_revenue_rrl(canceled_custs)
 
 with st.expander("Rev By Month"):
-    st.dataframe(rev_by_month, use_container_width=True)
+    st.write(rev_by_month, use_container_width=True)
 
 with st.expander("churned_revenue"):
     st.dataframe(churned_revenue, use_container_width=True)
