@@ -310,8 +310,8 @@ class ChurnAnalyzer:
         for m, custs in canceled_custs.items():
             m_norm = m.to_timestamp()
 
-            for cid in custs:
-                cancel_rows.append({cust_col: cid, "cancel_month": m_norm})
+            for i, row in custs.iterrows():
+                cancel_rows.append({cust_col: row[cust_col], "cancel_month": m_norm})
         cancels = pd.DataFrame(cancel_rows)
         if cancels.empty:
             return 0.0, pd.DataFrame(columns=["loss_month", "churned_rrl"])
