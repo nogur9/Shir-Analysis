@@ -14,10 +14,10 @@ st.title("Churn Dashboard")
 source = r"subscriptions.csv"
 
 st.sidebar.header("Filters")
-enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=True)
-enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances", value=True)
-enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=True)
-enable_remove_non_payments = st.sidebar.checkbox("Exclude customers paid < 60", value=True)
+# enable_test_instances = st.sidebar.checkbox("Exclude test instances (shir*)", value=True)
+# enable_remove_short_period = st.sidebar.checkbox("Exclude short period instances", value=True)
+# enable_remove_by_status = st.sidebar.checkbox("Exclude non - active\ cancelled instances", value=True)
+# enable_remove_non_payments = st.sidebar.checkbox("Exclude customers paid < 60", value=True)
 
 min_dur_months, max_dur_months = st.sidebar.slider("Filter by Months", min_value=0, max_value=13,
                                                    value=(0, 13))
@@ -37,14 +37,14 @@ rules = [
     RemoveByAmount(min_amount, max_amount),
     RemoveByDuration(min_dur_months, max_dur_months)
 ]
-if enable_test_instances:
-    rules.append(RemoveTestInstances())
-if enable_remove_short_period:
-    rules.append(RemoveShortPeriod())
-if enable_remove_by_status:
-    rules.append(RemoveByStatus())
-if enable_remove_non_payments:
-    rules.append(RemoveNonPayments())
+# if enable_test_instances:
+#     rules.append(RemoveTestInstances())
+# if enable_remove_short_period:
+#     rules.append(RemoveShortPeriod())
+# if enable_remove_by_status:
+#     rules.append(RemoveByStatus())
+# if enable_remove_non_payments:
+#     rules.append(RemoveNonPayments())
 if times_a_week != 'all':
     rules.append(RemoveByWeekTimes(times_a_week))
 if l_type != 'all':

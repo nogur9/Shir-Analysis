@@ -4,7 +4,8 @@ from typing import Iterable, List, Optional
 import pandas as pd
 
 from consts import payment_customers_path, cust_id, email_col, name_col, new_payment_customers_path
-from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveNonPayments
+from exclusion_criteria import ExclusionCriteria, RemoveTestInstances, RemoveByStatus, RemoveNonPayments, \
+    RemoveShortPeriod
 from lesson_types import find_class_type
 
 
@@ -13,21 +14,28 @@ class FilteringHandler:
     Applies a list of ExclusionCriteria to a DataFrame.
     Rows are EXCLUDED if ANY rule returns True.
     """
-    def __init__(self, exclusion_rules: Optional[Iterable[ExclusionCriteria]] = None):
-        self.rules: List[ExclusionCriteria] = list(exclusion_rules or [])
-        self.pay_df = pd.read_csv(payment_customers_path)
+    def __init__(self, additional_exclusion_rules: Optional[Iterable[ExclusionCriteria]] = None):
 
+        self.rules = [RemoveTestInstances(),  RemoveShortPeriod(), RemoveByStatus(), RemoveNonPayments()]
+        if additional_exclusion_rules:
+            self.rules += additional_exclusion_rules
+
+        self.pay_df = pd.read_csv(payment_customers_path)
         self.pay_df['Email'] = self.pay_df['Email'].str.lower()
         self.pay_df['Name'] = self.pay_df['Name'].str.lower()
         self.pay_df[cust_id] = self.pay_df['Name'] + '-' + self.pay_df['Email']
-
-
 
         self.new_pay_df = pd.read_csv(new_payment_customers_path)
 
         self.new_pay_df[email_col] = self.new_pay_df[email_col].str.lower()
         self.new_pay_df[name_col] = self.new_pay_df[name_col].str.lower()
         self.new_pay_df[cust_id] = self.new_pay_df[name_col] + '-' + self.new_pay_df[email_col]
+
+    def load(self, df: pd.DataFrame):
+        df = df.copy()
+        df = self.apply_lesson_types(df)
+        df = self.filter(df)
+        return df
 
     def apply_lesson_types(self, df: pd.DataFrame):
         amount_dict = self.new_pay_df[[cust_id, 'Amount']].to_dict(orient='tight', index=False)
@@ -49,7 +57,7 @@ class FilteringHandler:
         if not self.rules or df.empty:
             return df
         df = df.copy()
-        df = self.apply_lesson_types(df)
+        # df = self.apply_lesson_types(df)
 
 
         # Start with "include everything"
@@ -72,7 +80,7 @@ class FilteringHandler:
 
 
 if __name__ == "__main__":
-    fh = FilteringHandler(exclusion_rules=[RemoveTestInstances(), RemoveByStatus()])
+    fh = FilteringHandler(additional_exclusion_rules=[RemoveTestInstances(), RemoveByStatus()])
     df = pd.read_csv("subscriptions.csv")
     clean_df = fh.filter(df)
     print(1)

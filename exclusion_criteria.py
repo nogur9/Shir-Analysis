@@ -17,7 +17,8 @@ class RemoveTestInstances(ExclusionCriteria):
         # Guard for missing cols
         em = str(row.get(email_col, "") or "")
         nm = str(row.get(name_col, "") or "")
-
+        if em in ["shir.bartal@gmail.com", "hassanstudentshir@gmail.com", "ola.khadijah.994@gmail.com", "briansamuelwalker@yahoo.co.uk"]:
+            return True
         if em in self.exceptions:
             return False
         return ("shir" in em.lower()) or ("shir" in nm.lower())

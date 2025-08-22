@@ -10,6 +10,10 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import datetime
+from lesson_types import find_class_type
+from pandas.tseries.offsets import DateOffset
+
+
 
 @dataclass
 class ChurnAnalyzer:
@@ -20,7 +24,7 @@ class ChurnAnalyzer:
     started_custs: Optional[Dict] = None
     canceled_custs: Optional[Dict] = None
     _df: Optional[pd.DataFrame] = None
-
+    monthly_payment_df: Optional[pd.DataFrame] = None
 
     def load(self, source: Union[str, pd.DataFrame]) -> "ChurnAnalyzer":
         df = pd.read_csv(source).copy()
@@ -31,7 +35,6 @@ class ChurnAnalyzer:
 
         df['cust_id'] = df[name_col] + '-' + df[email_col]
 
-
         for col in [start_at_col, canceled_at_col, ended_at_col]:
             if col in df.columns:
                 df[col] = pd.to_datetime(df[col], errors="coerce")
@@ -39,10 +42,116 @@ class ChurnAnalyzer:
         df = df[df[start_at_col] <= datetime.datetime.strptime("31/7/2025", "%d/%m/%Y")]
         df.loc[df[canceled_at_col] > datetime.datetime.strptime("31/7/2025", "%d/%m/%Y"), canceled_at_col] = pd.NaT
         df.loc[df[ended_at_col] > datetime.datetime.strptime("31/7/2025", "%d/%m/%Y"), ended_at_col] = pd.NaT
+
+        df = self.filtering.load(df)
         self.duplicates_analyser = DuplicationAnalysis(df=df, end_col=self.end_col)
         self._df = self.duplicates_analyser.handle_duplications()
-
+        self.monthly_payment_df = self.build_payments_monthly(self.filtering.new_pay_df, df)
         return self
+
+    # Assumptions about columns; rename if yours differ
+    # new_pay_df columns: [cust_id, payment_date, Amount, ...]
+    # customers_df (after your duplication-cleaner): [customer_id, start_at_col, canceled_at_col, ...]
+    # Your enums: lesson.months  (int). We'll use your `find_class_type(amount)`.
+
+    def _clip_periods_to_next_start(self, df: pd.DataFrame, by: list):
+        """
+        Ensure no overlap across consecutive plans in the same group (e.g., per customer).
+        For each group, set end = min(original_end, next_start - 1 day).
+        """
+        df = df.sort_values(by + [start_at_col]).copy()
+        next_start = df.groupby(by)[start_at_col].shift(-1)
+        df[canceled_at_col] = pd.to_datetime(df[canceled_at_col])
+
+        # If a next plan starts earlier than our end, clip
+        mask = next_start.notna() & (df[canceled_at_col].notna())
+        df.loc[mask, canceled_at_col] = df.loc[mask, [canceled_at_col]].min(axis=1)
+        # But also clip to the day before next_start if that is earlier
+        df.loc[mask, canceled_at_col] = pd.concat([
+            df.loc[mask, canceled_at_col],
+            (pd.to_datetime(next_start[mask]) - pd.Timedelta(days=1))
+        ], axis=1).min(axis=1)
+
+        return df
+
+    def _month_floor(self, ts):  # normalize to month start
+        return pd.to_datetime(ts).values.astype('datetime64[M]').astype('datetime64[ns]')
+
+    def build_payments_monthly(self,
+            new_pay_df: pd.DataFrame,
+            customers_df: Optional[pd.DataFrame] = None,
+            cust_col: str = "cust_id",
+            payment_date_col: str = start_at_col,
+            amount_col: str = "Amount",
+    ):
+        """
+        1) Map each payment to (Lesson, months, monthly_price)
+        2) Build a contract period per payment: [contract_start, contract_end]
+        3) Clip contract_end to either next plan start (same customer) - 1 day, or to customer cancel date (if provided)
+        4) Expand to months per customer with the monthly price in effect for that month
+        """
+        pay = new_pay_df.copy()
+
+        # 1) lesson & monthly price
+        pay["Lesson"] = pay[amount_col].apply(find_class_type)  # your function
+        pay = pay[pay["Lesson"].notna()]
+        pay["months"] = pay["Lesson"].apply(lambda L: L.months if pd.notna(L) else None)
+        pay["monthly_price"] = pay[amount_col] / pay["months"]
+
+        # 2) contract period bounds
+        pay["contract_start"] = pd.to_datetime(pay[payment_date_col])
+        # end = start + months - 1 day
+        pay["contract_end"] = pay["contract_start"] + pay["months"].apply(
+            lambda m: DateOffset(months=m)) - pd.Timedelta(days=1)
+
+        # 3) clip to cancellation if provided
+        if customers_df is not None and canceled_at_col in customers_df.columns:
+            cancels = customers_df[[cust_col, canceled_at_col]].drop_duplicates()
+            cancels = cancels.rename(columns={canceled_at_col: "cancel_at"})
+            pay = pay.merge(cancels, on=cust_col, how="left")
+            pay["cancel_at"] = pd.to_datetime(pay["cancel_at"])
+            # if canceled earlier than contract_end, clip
+            mask_cancel = pay["cancel_at"].notna()
+            pay.loc[mask_cancel, "contract_end"] = pd.concat([
+                pay.loc[mask_cancel, "contract_end"],
+                pay.loc[mask_cancel, "cancel_at"]
+            ], axis=1).min(axis=1)
+        else:
+            pay["cancel_at"] = pd.NaT
+
+        # Clip to next plan switch in the same customer
+        pay = self._clip_periods_to_next_start(
+            pay, by=[cust_col]
+        )
+
+        # Remove any rows with inverted periods (e.g., switch+cancel same day)
+        pay = pay[pay["contract_end"] >= pay["contract_start"]].copy()
+
+        # 4) expand to months
+        # Build month index per row
+        pay["month_start"] = self._month_floor(pay["contract_start"])
+        pay["month_end"] = self._month_floor(pay["contract_end"])
+
+        # period_range inclusive: we include both month_start and month_end
+        pay["month_list"] = pay.apply(
+            lambda r: pd.period_range(
+                pd.Period(r["month_start"], freq="M"),
+                pd.Period(r["month_end"], freq="M"),
+                freq="M"
+            ).to_timestamp(),
+            axis=1
+        )
+        exploded = pay.explode("month_list", ignore_index=True)
+        exploded = exploded.rename(columns={"month_list": "month"})
+        exploded = exploded[[cust_col, "month", "Lesson", "monthly_price", "contract_start"]]
+
+        # In rare cases with multiple rows for same customer×month (e.g., 2 payments in same month),
+        # keep the one with the latest contract_start (the newer plan in effect).
+        exploded = exploded.sort_values([cust_col, "month", "contract_start"])
+        exploded = exploded.groupby([cust_col, "month"], as_index=False).tail(1)
+
+        return exploded  # columns: customer_id, month, Lesson, monthly_price
+
 
     def fix_and_add(self, df):
         df_new_cust = pd.DataFrame([new_cust])

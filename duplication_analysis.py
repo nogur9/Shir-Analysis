@@ -16,7 +16,6 @@ class DuplicationAnalysis:
         self.end_col = end_col
         self._df = df
         self.clean_df = None
-        self.filtering = FilteringHandler([RemoveTestInstances()])
 
         if create:
             self.duplications_guide = self.assign_duplicate_group_ids()
@@ -56,7 +55,6 @@ class DuplicationAnalysis:
 
     def assign_duplicate_group_ids(self):
         df = self._df.copy()  # do not mutate caller
-        df = self.filtering.filter(df)
         # df['customer_id'] = df[email_col] + '-' + df[name_col]
 
         # Ensure positional alignment 0..n-1
