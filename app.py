@@ -24,7 +24,7 @@ min_dur_months, max_dur_months = st.sidebar.slider("Filter by Months", min_value
 min_amount, max_amount = st.sidebar.slider("Filter by Amount", min_value=60, max_value=2000,
                                            value=(60, 2000))
 times_a_week = st.sidebar.selectbox("Weekly Times", ['all', 1, 2], index=0)
-l_type = st.sidebar.selectbox("Lesson Type", ['all', 'Group', 'Private'], index=2)
+l_type = st.sidebar.selectbox("Lesson Type", ['all', 'Group', 'Private'], index=0)
 
 # id_col = st.sidebar.text_input("ID column (for explicit removals)", value="Customer ID")
 # ids_to_remove_txt = st.sidebar.text_area("IDs to remove (one per line)", value="")
@@ -55,7 +55,7 @@ fh = FilteringHandler(rules)
 
 with st.spinner("Analyzing..."):
     churn_analyser = ChurnAnalyzer(end_col=ending_column, filtering=fh).load(source)
-    summary = churn_analyser.compute_monthly_churn_summary()
+    summary, rev_by_month = churn_analyser.compute_monthly_churn_summary()
 
 st.subheader("Monthly Churn (Base + Cancels + Rate)")
 
@@ -76,6 +76,9 @@ with tabs[2]:
 
 churn_df, started_custs, canceled_custs = churn_analyser.get_data()
 churned_revenue = churn_analyser.churned_revenue_rrl(canceled_custs)
+
+with st.expander("Rev By Month"):
+    st.dataframe(rev_by_month, use_container_width=True)
 
 with st.expander("churned_revenue"):
     st.dataframe(churned_revenue, use_container_width=True)

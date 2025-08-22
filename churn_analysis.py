@@ -274,11 +274,11 @@ class ChurnAnalyzer:
         out['Churn_Rate'] = (out["Cancels"] / out["Actives"])
         avg_monthly_rev, rev_by_month = self.average_monthly_revenue()
 
-        out["rev_by_month"] = rev_by_month
+        #out["rev_by_month"] = rev_by_month
 
         out = out.sort_values("Month")
 
-        return out
+        return out, rev_by_month
 
 
     def average_monthly_revenue(self):
