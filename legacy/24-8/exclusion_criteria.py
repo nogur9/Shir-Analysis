@@ -91,6 +91,18 @@ class RemoveByWeekTimes(ExclusionCriteria):
             return True
         return row['Lesson'].times != self.times
 
+#
+# class RemoveByDuration(ExclusionCriteria):
+#     def __init__(self, months):
+#         super().__init__()
+#         self.months = months
+#
+#     def filter(self, row: pd.Series) -> bool:
+#         if row['Lesson'] is None:
+#             return True
+#         return row['Lesson'].months != self.months
+
+
 
 class RemoveByAmount(ExclusionCriteria):
     def __init__(self, min_amount, max_amount):

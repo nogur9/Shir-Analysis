@@ -18,8 +18,9 @@ from pandas.tseries.offsets import DateOffset
 @dataclass
 class ChurnAnalyzer:
     # Columns
-    end_col: str = "Canceled At (UTC)",   # or "Ended At (UTC)"
+
     filtering: FilteringHandler = field(default_factory=FilteringHandler)
+    end_col: Optional[str] = "Canceled At (UTC)",  # or "Ended At (UTC)"
     duplicates_analyser: Optional[DuplicationAnalysis] = None
     started_custs: Optional[Dict] = None
     canceled_custs: Optional[Dict] = None
@@ -32,7 +33,6 @@ class ChurnAnalyzer:
         df[email_col] = df[email_col].str.lower()
         df[name_col] = df[name_col].str.lower()
         df = self.fix_and_add(df)
-
         df['cust_id'] = df[name_col] + '-' + df[email_col]
 
         for col in [start_at_col, canceled_at_col, ended_at_col]:

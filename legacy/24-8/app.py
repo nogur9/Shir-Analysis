@@ -5,7 +5,7 @@ from filtering_handler import FilteringHandler
 from exclusion_criteria import (RemoveTestInstances, RemoveSpecificCustomers, RemoveByStatus,
                                 RemoveShortPeriod, RemoveNonPayments, RemoveByDuration, RemoveByAmount,
                                 RemoveByWeekTimes, RemoveByLessonType)
-from consts import start_at_col, canceled_at_col, ended_at_col
+from consts import canceled_at_col, ended_at_col
 
 
 st.set_page_config(page_title="Churn Dashboard", layout="wide")
@@ -54,7 +54,7 @@ if l_type != 'all':
 fh = FilteringHandler(rules)
 
 with st.spinner("Analyzing..."):
-    churn_analyser = ChurnAnalyzer(end_col=ending_column, filtering=fh).load(source)
+    churn_analyser = ChurnAnalyzer(filtering=fh).load(source)
     summary, rev_by_month = churn_analyser.compute_monthly_churn_summary()
 
 st.subheader("Monthly Churn (Base + Cancels + Rate)")
