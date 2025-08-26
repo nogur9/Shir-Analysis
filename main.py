@@ -14,4 +14,4 @@ analyzer.compute_churn_analysis()
 churn_summary = analyzer.get_churn_summary()
 
 # Get churned revenue
-total_rrl, rrl_by_month = analyzer.compute_churned_revenue("in_advance")
+#total_rrl, rrl_by_month = analyzer.compute_churned_revenue("in_advance")

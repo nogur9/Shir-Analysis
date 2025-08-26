@@ -101,9 +101,7 @@ class ChurnAnalyzer:
         
         return self.set_filters(default_filters)
     
-    def compute_churn_analysis(self, 
-                              from_month: Optional[pd.Period] = None,
-                              to_month: Optional[pd.Period] = None) -> 'ChurnAnalyzer':
+    def compute_churn_analysis(self) -> 'ChurnAnalyzer':
         """
         Compute churn analysis metrics
         
@@ -115,16 +113,14 @@ class ChurnAnalyzer:
             Self for method chaining
         """
         # Compute monthly churn summary
-        self._churn_summary, self._revenue_by_month = (
-            self.churn_analysis_service.compute_monthly_churn_summary(from_month, to_month)
+        self._churn_summary = (
+            self.churn_analysis_service.compute_monthly_churn_summary()
         )
-        
+
         # Get customer data by month
         filtered_df = self.churn_analysis_service._apply_filters()
-        _, _, all_months = self.churn_analysis_service._get_monthly_counts(
-            filtered_df, from_month, to_month
-        )
-        
+        _, _, all_months = self.churn_analysis_service._get_monthly_counts(filtered_df)
+
         self._started_customers, self._canceled_customers = (
             self.churn_analysis_service.get_customer_data_by_month(filtered_df, all_months)
         )
@@ -174,7 +170,7 @@ class ChurnAnalyzer:
             'data_loaded': self._subscriptions_df is not None,
             'churn_analysis_computed': self._churn_summary is not None,
             'total_subscriptions': len(self._subscriptions_df) if self._subscriptions_df is not None else 0,
-            'total_monthly_records': len(self._monthly_payments_df) if self._monthly_payments_df is not None else 0,
+            # 'total_monthly_records': len(self._monthly_payments_df) if self._monthly_payments_df is not None else 0,
             'active_filters': self._filter_chain.get_active_filters() if self._filter_chain else [],
             'end_column_used': self.end_column
         }
@@ -246,12 +242,12 @@ class ChurnAnalyzer:
             filename = f"{base_filename}_churn_summary.csv"
             self._churn_summary.to_csv(filename, index=False)
             exported_files['churn_summary'] = filename
-        
-        # Export revenue by month
-        if self._revenue_by_month is not None:
-            filename = f"{base_filename}_revenue_by_month.csv"
-            self._revenue_by_month.to_csv(filename)
-            exported_files['revenue_by_month'] = filename
+        #
+        # # Export revenue by month
+        # if self._revenue_by_month is not None:
+        #     filename = f"{base_filename}_revenue_by_month.csv"
+        #     self._revenue_by_month.to_csv(filename)
+        #     exported_files['revenue_by_month'] = filename
         
         return exported_files
 

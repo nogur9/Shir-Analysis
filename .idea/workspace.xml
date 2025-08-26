@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="major refactor">
+      <change afterPath="$PROJECT_DIR$/app_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/revenue_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/churn_analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/churn_analysis_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/churn_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/churn_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/legacy/24-8/duplicates.csv" beforeDir="false" afterPath="$PROJECT_DIR$/legacy/24-8/duplicates.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;nogur9&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/nogur9/Shir-Analysis.git&quot;,
+    &quot;accountId&quot;: &quot;5520a225-048f-45a0-8e60-791b253da8ad&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="308qKtY9JNkWmk415NHLleG0kUw" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.app.executor": "Debug",
+    "Python.app_test.executor": "Run",
+    "Python.consts.executor": "Run",
+    "Python.duplication_analysis.executor": "Debug",
+    "Python.filtering_handler.executor": "Run",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/USER/PycharmProjects/Shir-Analysis",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\legacy\24-8" />
+      <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis" />
+      <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\notebooks" />
+      <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\legacy" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.app_test">
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Shir-Analysis" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\USER\PycharmProjects\Shir-Analysis\legacy\24-8\app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="app_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Shir-Analysis" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="consts" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Shir-Analysis" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\USER\PycharmProjects\Shir-Analysis\legacy\24-8\consts.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="duplication_analysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Shir-Analysis" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\USER\PycharmProjects\Shir-Analysis\legacy\24-8\duplication_analysis.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Shir-Analysis" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.app_test" />
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.app" />
+        <item itemvalue="Python.consts" />
+        <item itemvalue="Python.duplication_analysis" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-4f4e415b4190-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.26053.29" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="" />
+      <created>1753019488688</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1753019488688</updated>
+    </task>
+    <task id="LOCAL‎-00001" summary="first commit">
+      <option name="closed" value="true" />
+      <created>1753365595935</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL‎-00001" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1753365595935</updated>
+    </task>
+    <task id="LOCAL‎-00002" summary="added exclusion filters">
+      <option name="closed" value="true" />
+      <created>1753366210855</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL‎-00002" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1753366210855</updated>
+    </task>
+    <task id="LOCAL‎-00003" summary="email &amp; names analysis">
+      <option name="closed" value="true" />
+      <created>1753693732006</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL‎-00003" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1753693732006</updated>
+    </task>
+    <task id="LOCAL‎-00004" summary="adding streamlit platform">
+      <option name="closed" value="true" />
+      <created>1754662680747</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL‎-00004" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1754662680747</updated>
+    </task>
+    <task id="LOCAL‎-00005" summary=".">
+      <option name="closed" value="true" />
+      <created>1754671584099</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL‎-00005" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1754671584099</updated>
+    </task>
+    <task id="LOCAL‎-00006" summary=".">
+      <option name="closed" value="true" />
+      <created>1754673298743</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL‎-00006" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1754673298744</updated>
+    </task>
+    <task id="LOCAL‎-00007" summary=".">
+      <option name="closed" value="true" />
+      <created>1754755885754</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL‎-00007" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1754755885756</updated>
+    </task>
+    <task id="LOCAL‎-00008" summary=".">
+      <option name="closed" value="true" />
+      <created>1754757768702</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL‎-00008" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1754757768702</updated>
+    </task>
+    <task id="LOCAL‎-00009" summary="requirements">
+      <option name="closed" value="true" />
+      <created>1754757860890</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL‎-00009" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1754757860890</updated>
+    </task>
+    <task id="LOCAL‎-00010" summary="requirements">
+      <option name="closed" value="true" />
+      <created>1754758540208</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL‎-00010" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1754758540208</updated>
+    </task>
+    <task id="LOCAL‎-00011" summary="requirements">
+      <option name="closed" value="true" />
+      <created>1754760165070</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL‎-00011" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1754760165070</updated>
+    </task>
+    <task id="LOCAL‎-00012" summary="duplicates">
+      <option name="closed" value="true" />
+      <created>1755165610920</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL‎-00012" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755165610920</updated>
+    </task>
+    <task id="LOCAL‎-00013" summary="duplicates">
+      <option name="closed" value="true" />
+      <created>1755170635157</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL‎-00013" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755170635157</updated>
+    </task>
+    <task id="LOCAL‎-00014" summary="plots">
+      <option name="closed" value="true" />
+      <created>1755172302232</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL‎-00014" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755172302232</updated>
+    </task>
+    <task id="LOCAL‎-00015" summary="plots">
+      <option name="closed" value="true" />
+      <created>1755178590132</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL‎-00015" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755178590132</updated>
+    </task>
+    <task id="LOCAL‎-00016" summary="pay">
+      <option name="closed" value="true" />
+      <created>1755178846028</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL‎-00016" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755178846028</updated>
+    </task>
+    <task id="LOCAL‎-00017" summary="pay">
+      <option name="closed" value="true" />
+      <created>1755178983894</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL‎-00017" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755178983894</updated>
+    </task>
+    <task id="LOCAL‎-00018" summary="bug">
+      <option name="closed" value="true" />
+      <created>1755179386338</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL‎-00018" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755179386338</updated>
+    </task>
+    <task id="LOCAL‎-00019" summary="bug">
+      <option name="closed" value="true" />
+      <created>1755179849203</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL‎-00019" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755179849203</updated>
+    </task>
+    <task id="LOCAL‎-00020" summary="bug">
+      <option name="closed" value="true" />
+      <created>1755179945791</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL‎-00020" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755179945791</updated>
+    </task>
+    <task id="LOCAL‎-00021" summary="fixing payments aligning, fix specific fixes &#10;add canceling analysis">
+      <option name="closed" value="true" />
+      <created>1755337522382</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL‎-00021" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755337522382</updated>
+    </task>
+    <task id="LOCAL‎-00022" summary="req file">
+      <option name="closed" value="true" />
+      <created>1755346941282</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL‎-00022" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755346941282</updated>
+    </task>
+    <task id="LOCAL‎-00023" summary="req file">
+      <option name="closed" value="true" />
+      <created>1755347034486</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL‎-00023" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755347034486</updated>
+    </task>
+    <task id="LOCAL‎-00024" summary="req file">
+      <option name="closed" value="true" />
+      <created>1755347882410</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL‎-00024" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755347882410</updated>
+    </task>
+    <task id="LOCAL‎-00025" summary="changed locations">
+      <option name="closed" value="true" />
+      <created>1755348000096</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL‎-00025" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755348000096</updated>
+    </task>
+    <task id="LOCAL‎-00026" summary="added lesson type">
+      <option name="closed" value="true" />
+      <created>1755439885608</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL‎-00026" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755439885608</updated>
+    </task>
+    <task id="LOCAL‎-00027" summary="added lesson type">
+      <option name="closed" value="true" />
+      <created>1755445135306</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL‎-00027" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755445135306</updated>
+    </task>
+    <task id="LOCAL‎-00028" summary="added lesson type">
+      <option name="closed" value="true" />
+      <created>1755874519730</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL‎-00028" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755874519730</updated>
+    </task>
+    <task id="LOCAL‎-00029" summary="added lesson type">
+      <option name="closed" value="true" />
+      <created>1755876861061</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL‎-00029" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755876861061</updated>
+    </task>
+    <task id="LOCAL‎-00030" summary="added lesson type">
+      <option name="closed" value="true" />
+      <created>1755878226226</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL‎-00030" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755878226226</updated>
+    </task>
+    <task id="LOCAL‎-00031" summary="added lesson type">
+      <option name="closed" value="true" />
+      <created>1755878463893</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL‎-00031" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755878463893</updated>
+    </task>
+    <task id="LOCAL‎-00032" summary="added lesson type">
+      <option name="closed" value="true" />
+      <created>1755879249422</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL‎-00032" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755879249422</updated>
+    </task>
+    <task id="LOCAL‎-00033" summary="added lesson type">
+      <option name="closed" value="true" />
+      <created>1755879666000</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL‎-00033" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1755879666000</updated>
+    </task>
+    <task id="LOCAL‎-00034" summary="major refactor">
+      <option name="closed" value="true" />
+      <created>1756162240690</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL‎-00034" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756162240690</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="first commit" />
+    <MESSAGE value="added exclusion filters" />
+    <MESSAGE value="email &amp; names analysis" />
+    <MESSAGE value="adding streamlit platform" />
+    <MESSAGE value="." />
+    <MESSAGE value="requirements" />
+    <MESSAGE value="duplicates" />
+    <MESSAGE value="plots" />
+    <MESSAGE value="pay" />
+    <MESSAGE value="bug" />
+    <MESSAGE value="fixing payments aligning, fix specific fixes &#10;add canceling analysis" />
+    <MESSAGE value="req file" />
+    <MESSAGE value="changed locations" />
+    <MESSAGE value="added lesson type" />
+    <MESSAGE value="major refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="major refactor" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/legacy/24-8/app.py</url>
+          <line>117</line>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/legacy/24-8/app.py</url>
+          <line>111</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/legacy/24-8/app.py</url>
+          <line>77</line>
+          <option name="timeStamp" value="90" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/legacy/24-8/app.py</url>
+          <line>76</line>
+          <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/legacy/24-8/app.py</url>
+          <line>63</line>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/legacy/24-8/app.py</url>
+          <line>57</line>
+          <option name="timeStamp" value="96" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/legacy/24-8/app.py</url>
+          <line>56</line>
+          <option name="timeStamp" value="97" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
+          <line>132</line>
+          <option name="timeStamp" value="153" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
+          <line>93</line>
+          <option name="timeStamp" value="155" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
+          <line>95</line>
+          <option name="timeStamp" value="157" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/churn_analysis_service.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="162" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

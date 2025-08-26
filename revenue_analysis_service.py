@@ -9,28 +9,28 @@ from models import MonthlyMetrics, ChurnAnalysisResult, Customer
 from filters import FilterChain
 
 
-class ChurnAnalysisService:
+class RevenueAnalysisService:
     """Service for computing churn analysis metrics"""
-    
+
     def __init__(self, end_column: str = None):
         self.config = Config()
         self.end_column = end_column or self.config.get_column('canceled_date')
         self._subscriptions_df: Optional[pd.DataFrame] = None
         self._monthly_payments_df: Optional[pd.DataFrame] = None
         self._filter_chain: Optional[FilterChain] = None
-        
-    def set_data(self, 
-                 subscriptions_df: pd.DataFrame, 
-                 monthly_payments_df: pd.DataFrame) -> 'ChurnAnalysisService':
+
+    def set_data(self,
+                 subscriptions_df: pd.DataFrame,
+                 monthly_payments_df: pd.DataFrame) -> 'RevenueAnalysisService':
         """Set the data for analysis"""
         self._subscriptions_df = subscriptions_df.copy()
         self._monthly_payments_df = monthly_payments_df.copy()
         return self
 
-    def compute_monthly_churn_summary(self):
+    def compute_monthly_revenue_summary(self):
         """
         Compute monthly churn summary metrics
-        
+
         Returns:
             Tuple of (summary_dataframe, revenue_by_month)
         """
@@ -41,7 +41,7 @@ class ChurnAnalysisService:
 
         # Get monthly ranges and counts
         starts, cancellations, all_months = self._get_monthly_counts(df)
-        
+
         # Calculate active customers per month
         actives_per_month = self._calculate_active_customers(df, all_months)
 
@@ -50,9 +50,8 @@ class ChurnAnalysisService:
 
         return summary_df
 
-
-    def _get_monthly_counts(self, 
-                           df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.PeriodIndex]:
+    def _get_monthly_counts(self,
+                            df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.PeriodIndex]:
         """Get monthly start and cancellation counts"""
 
         start_col = self.config.get_column('start_date')
@@ -81,7 +80,6 @@ class ChurnAnalysisService:
 
         return starts, cancellations, all_months
 
-
     def _calculate_active_customers(self, df: pd.DataFrame, all_months: pd.PeriodIndex):
         """Calculate active customers at the start of each month (inclusive start, open-ended end)."""
         start_col = self.config.get_column('start_date')
@@ -97,7 +95,6 @@ class ChurnAnalysisService:
             actives_per_month.append(int(active_mask.sum()))
         return actives_per_month
 
-
     def get_analysis_summary(self) -> Dict:
         """Get summary of the analysis configuration and data"""
         return {
@@ -106,11 +103,11 @@ class ChurnAnalysisService:
             'total_monthly_records': len(self._monthly_payments_df) if self._monthly_payments_df is not None else 0,
             'active_filters': self._filter_chain.get_active_filters() if self._filter_chain else [],
             'analysis_date_range': {
-                'start': self._subscriptions_df[self.config.get_column('start_date')].min() if self._subscriptions_df is not None else None,
+                'start': self._subscriptions_df[
+                    self.config.get_column('start_date')].min() if self._subscriptions_df is not None else None,
                 'end': self._subscriptions_df[self.end_column].max() if self._subscriptions_df is not None else None
             } if self._subscriptions_df is not None else None
         }
-
 
     def get_customer_data_by_month(self,
                                    filtered_df: pd.DataFrame,
@@ -136,7 +133,6 @@ class ChurnAnalysisService:
 
         return started_customers, canceled_customers
 
-
     def set_filters(self, filter_chain: FilterChain) -> 'ChurnAnalysisService':
         """Set the filters to apply to the data"""
         self._filter_chain = filter_chain
@@ -148,7 +144,6 @@ class ChurnAnalysisService:
             return self._subscriptions_df
 
         return self._filter_chain.apply(self._subscriptions_df)
-
 
     def _build_summary(self, starts, cancellations, actives_per_month):
 
@@ -187,3 +182,123 @@ class ChurnAnalysisService:
         # summary_df['Month'] = summary_df['Month'].astype(str)
         summary_df['Month'] = summary_df['Month'].dt.to_timestamp(how='S')  # month start Timestamp
         return summary_df
+
+    def compute_churned_revenue(self,
+                                canceled_customers: Dict,
+                                billing_timing: str = "in_advance") -> Tuple[float, pd.DataFrame]:
+        """
+        Compute Recurring Revenue Lost (RRL) due to churn
+
+        Args:
+            canceled_customers: Dictionary mapping months to customer dataframes
+            billing_timing: "in_advance" or "in_arrears"
+
+        Returns:
+            Tuple of (total_rrl, rrl_by_month_dataframe)
+        """
+        if self._monthly_payments_df is None:
+            raise ValueError("No monthly payments data set. Call set_data() first.")
+
+        # Build cancellation records
+        cancel_records = self._build_cancellation_records(canceled_customers)
+
+        if cancel_records.empty:
+            return 0.0, pd.DataFrame(columns=["loss_month", "churned_rrl"])
+
+        # Join with monthly payments data
+        cancel_records = self._join_with_monthly_payments(cancel_records)
+
+        # Calculate revenue loss by month
+        rrl_by_month = self._calculate_revenue_loss_by_month(cancel_records, billing_timing)
+
+        total_rrl = float(rrl_by_month["churned_rrl"].sum())
+
+        return total_rrl, rrl_by_month
+
+    def get_customer_data_by_month(self,
+                                   filtered_df: pd.DataFrame,
+                                   all_months: pd.PeriodIndex) -> Tuple[Dict, Dict]:
+        """Get customer data organized by month"""
+        started_customers = {}
+        canceled_customers = {}
+
+        for month in all_months:
+            # Customers who started this month
+            start_mask = filtered_df['start_month'] == month
+            started_customers[month] = filtered_df[start_mask][
+                ['start_month', self.config.get_column('email'),
+                 self.config.get_column('name'), 'cust_id']
+            ]
+
+            # Customers who canceled this month
+            cancel_mask = filtered_df['cancel_month'] == month
+            canceled_customers[month] = filtered_df[cancel_mask][
+                ['cancel_month', self.config.get_column('email'),
+                 self.config.get_column('name'), 'cust_id']
+            ]
+
+        return started_customers, canceled_customers
+
+
+    def _calculate_revenue_metrics(self) -> Tuple[float, pd.Series]:
+        """Calculate revenue metrics from monthly payments data"""
+        if self._monthly_payments_df is None:
+            return 0.0, pd.Series()
+
+        revenue_by_month = self._monthly_payments_df.groupby('month')['monthly_price'].sum()
+        avg_monthly_revenue = revenue_by_month.mean()
+
+        return avg_monthly_revenue, revenue_by_month
+
+
+    def _join_with_monthly_payments(self, cancel_records: pd.DataFrame) -> pd.DataFrame:
+        """Join cancellation records with monthly payments data"""
+        monthly_data = self._monthly_payments_df[['cust_id', 'month', 'monthly_price']].copy()
+
+        # Join and filter to months up to cancellation
+        joined = cancel_records.merge(monthly_data, on='cust_id', how='left')
+        joined = joined[joined['month'] <= joined['cancel_month']]
+
+        if joined.empty:
+            return joined
+
+        # Get last known price before cancellation
+        joined = joined.sort_values(['cust_id', 'cancel_month', 'month'])
+        last_price = joined.groupby(['cust_id', 'cancel_month'], as_index=False).tail(1)
+
+        return last_price[['cust_id', 'cancel_month', 'monthly_price']]
+
+    def _calculate_revenue_loss_by_month(self,
+                                         cancel_records: pd.DataFrame,
+                                         billing_timing: str) -> pd.DataFrame:
+        """Calculate revenue loss by month based on billing timing"""
+        if cancel_records.empty:
+            return pd.DataFrame(columns=["loss_month", "churned_rrl"])
+
+        # Determine which month gets the revenue loss
+        if billing_timing == "in_advance":
+            # Customers pay at beginning of month -> loss affects next month
+            cancel_records["loss_month"] = (
+                    cancel_records["cancel_month"] + offsets.MonthBegin(1)
+            )
+        elif billing_timing == "in_arrears":
+            # Billed at end of month -> loss affects same month
+            cancel_records["loss_month"] = cancel_records["cancel_month"]
+        else:
+            raise ValueError("billing_timing must be 'in_advance' or 'in_arrears'")
+
+        # Aggregate by loss month
+        rrl_by_month = (
+            cancel_records.groupby("loss_month")["monthly_price"]
+            .sum()
+            .rename("churned_rrl")
+            .reset_index()
+            .sort_values("loss_month")
+        )
+
+        # Convert to period for consistency
+        rrl_by_month["loss_month"] = (
+            rrl_by_month["loss_month"].dt.to_period('M').dt.to_timestamp()
+        )
+
+        return rrl_by_month
