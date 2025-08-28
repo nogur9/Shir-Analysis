@@ -1,10 +1,12 @@
+
+
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
 
-from churn_analyzer import ChurnAnalyzer
+from analysis_manager import AnalysisManager
 from filters import (FilterChain, AmountRangeFilter, DurationFilter, 
                     WeeklyFrequencyFilter, LessonTypeFilter)
 from config import Config
@@ -68,7 +70,7 @@ def main():
     with st.spinner("Loading and analyzing data..."):
         try:
             # Initialize analyzer
-            analyzer = ChurnAnalyzer(end_column=ending_column)
+            analyzer = AnalysisManager(end_column=ending_column)
             
             # Load data
             analyzer.load_data()
@@ -78,6 +80,7 @@ def main():
             
             # Compute analysis
             analyzer.compute_churn_analysis()
+            analyzer.compute_revenue_analysis()
             
             # Get results
             churn_summary = analyzer.get_churn_summary()
@@ -125,6 +128,100 @@ def main():
                 fig = create_churn_rate_chart(churn_summary)
                 st.plotly_chart(fig, use_container_width=True)
             
+            # Filter Statistics Section - NEW!
+            st.subheader("📊 Filter Statistics & Row Tracking")
+            
+            # Get filter statistics
+            filter_stats, summary_stats = analyzer.get_filter_statistics()
+            
+            if filter_stats:
+                # Display summary metrics
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.metric("Total Filters Applied", summary_stats.get('total_filters', 0))
+                with col2:
+                    st.metric("Original Rows", summary_stats.get('total_original', 0))
+                with col3:
+                    st.metric("Rows Excluded", summary_stats.get('total_excluded', 0))
+                with col4:
+                    st.metric("Rows Included", summary_stats.get('total_included', 0))
+                
+                # Display detailed filter breakdown
+                st.write("**Detailed Filter Breakdown:**")
+                
+                # Create a DataFrame for better display
+                filter_data = []
+                for filter_name, stats in filter_stats.items():
+                    filter_data.append({
+                        'Filter': filter_name,
+                        'Rows Excluded': stats['excluded'],
+                        'Rows Included': stats['included'],
+                        'Excluded %': f"{stats['excluded_percentage']}%",
+                        'Included %': f"{stats['included_percentage']}%"
+                    })
+                
+                filter_df = pd.DataFrame(filter_data)
+                st.dataframe(filter_df, use_container_width=True)
+                
+                # Visual representation
+                st.write("**Filter Impact Visualization:**")
+                
+                # Create a stacked bar chart showing filter impact
+                fig = go.Figure()
+                
+                filter_names = list(filter_stats.keys())
+                excluded_counts = [filter_stats[name]['excluded'] for name in filter_names]
+                included_counts = [filter_stats[name]['included'] for name in filter_names]
+                
+                fig.add_trace(go.Bar(
+                    name='Excluded Rows',
+                    x=filter_names,
+                    y=excluded_counts,
+                    marker_color='#ef553b'
+                ))
+                
+                fig.add_trace(go.Bar(
+                    name='Included Rows',
+                    x=filter_names,
+                    y=included_counts,
+                    marker_color='#00cc96'
+                ))
+                
+                fig.update_layout(
+                    title="Filter Impact on Data Rows",
+                    xaxis_title="Filters Applied",
+                    yaxis_title="Number of Rows",
+                    barmode='stack',
+                    height=400
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Filter efficiency metrics
+                st.write("**Filter Efficiency:**")
+                total_original = summary_stats.get('total_original', 1)
+                total_excluded = summary_stats.get('total_excluded', 0)
+                total_included = summary_stats.get('total_included', 0)
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    efficiency = ((total_original - total_excluded) / total_original) * 100
+                    st.metric("Data Retention Rate", f"{efficiency:.1f}%")
+                
+                with col2:
+                    exclusion_rate = (total_excluded / total_original) * 100
+                    st.metric("Data Exclusion Rate", f"{exclusion_rate:.1f}%")
+                
+                with col3:
+                    if summary_stats.get('total_filters', 0) > 0:
+                        avg_exclusion_per_filter = total_excluded / summary_stats['total_filters']
+                        st.metric("Avg Rows Excluded per Filter", f"{avg_exclusion_per_filter:.0f}")
+                    else:
+                        st.metric("Avg Rows Excluded per Filter", "N/A")
+                
+            else:
+                st.info("No filters have been applied yet. Apply filters to see statistics.")
+            
             # Revenue analysis
             st.subheader("Revenue Analysis")
             
@@ -139,6 +236,26 @@ def main():
                 st.write(f"Average Monthly Revenue: ${revenue_by_month.mean():.2f}")
                 st.write(f"Total Revenue: ${revenue_by_month.sum():.2f}")
                 st.write(f"Revenue Range: ${revenue_by_month.min():.2f} - ${revenue_by_month.max():.2f}")
+            
+            # Advanced revenue metrics
+            st.subheader("Advanced Revenue Metrics")
+            
+            # Revenue by lesson type
+            lesson_type_metrics = analyzer.get_revenue_metrics_by_lesson_type()
+            if lesson_type_metrics:
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.write("**Revenue by Lesson Type**")
+                    lesson_type_df = pd.DataFrame(lesson_type_metrics).T
+                    st.dataframe(lesson_type_df)
+                
+                with col2:
+                    st.write("**Revenue by Duration**")
+                    duration_metrics = analyzer.get_revenue_metrics_by_duration()
+                    if duration_metrics:
+                        duration_df = pd.DataFrame(duration_metrics).T
+                        st.dataframe(duration_df)
             
             # Churned revenue analysis
             st.subheader("Churned Revenue Analysis")
@@ -164,6 +281,27 @@ def main():
                             st.dataframe(rrl_by_month)
                         else:
                             st.write("No churned revenue data available")
+            
+            # Customer lifetime value analysis
+            st.subheader("Customer Lifetime Value Analysis")
+            
+            # Get unique customer IDs for selection
+            if analyzer._monthly_payments_df is not None:
+                unique_customers = analyzer._monthly_payments_df['cust_id'].unique()
+                selected_customer = st.selectbox("Select Customer for LTV Analysis", unique_customers[:10])
+                
+                if st.button("Calculate Customer LTV"):
+                    ltv_metrics = analyzer.get_customer_lifetime_value(selected_customer)
+                    
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Total Revenue", f"${ltv_metrics['total_revenue']:,.2f}")
+                    with col2:
+                        st.metric("Avg Monthly Revenue", f"${ltv_metrics['average_monthly_revenue']:,.2f}")
+                    with col3:
+                        st.metric("Total Months", ltv_metrics['total_months'])
+                    with col4:
+                        st.metric("Revenue per Month", f"${ltv_metrics['total_revenue'] / ltv_metrics['total_months']:,.2f}" if ltv_metrics['total_months'] > 0 else "$0.00")
             
             # Data export
             st.subheader("Data Export")
@@ -323,4 +461,3 @@ def create_churn_rate_chart(summary_df: pd.DataFrame) -> go.Figure:
 
 if __name__ == "__main__":
     main()
-

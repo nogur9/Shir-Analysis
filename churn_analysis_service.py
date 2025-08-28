@@ -1,26 +1,20 @@
 import pandas as pd
-import numpy as np
-from typing import Dict, List, Optional, Tuple
-from datetime import datetime
-import pandas.tseries.offsets as offsets
-
+from typing import Dict, Optional, Tuple
 from config import Config
-from models import MonthlyMetrics, ChurnAnalysisResult, Customer
-from filters import FilterChain
 
 
 class ChurnAnalysisService:
     """Service for computing churn analysis metrics"""
-    
+
     def __init__(self, end_column: str = None):
         self.config = Config()
         self.end_column = end_column or self.config.get_column('canceled_date')
         self._subscriptions_df: Optional[pd.DataFrame] = None
         self._monthly_payments_df: Optional[pd.DataFrame] = None
-        self._filter_chain: Optional[FilterChain] = None
-        
-    def set_data(self, 
-                 subscriptions_df: pd.DataFrame, 
+
+
+    def set_data(self,
+                 subscriptions_df: pd.DataFrame,
                  monthly_payments_df: pd.DataFrame) -> 'ChurnAnalysisService':
         """Set the data for analysis"""
         self._subscriptions_df = subscriptions_df.copy()
@@ -30,18 +24,17 @@ class ChurnAnalysisService:
     def compute_monthly_churn_summary(self):
         """
         Compute monthly churn summary metrics
-        
+
         Returns:
             Tuple of (summary_dataframe, revenue_by_month)
         """
         if self._subscriptions_df is None:
             raise ValueError("No subscriptions data set. Call set_data() first.")
 
-        df = self._apply_filters()  # updates self._subscriptions_df and returns the filtered df
-
+        df = self._subscriptions_df.copy()
         # Get monthly ranges and counts
-        starts, cancellations, all_months = self._get_monthly_counts(df)
-        
+        starts, cancellations, all_months = self.get_monthly_counts(df)
+
         # Calculate active customers per month
         actives_per_month = self._calculate_active_customers(df, all_months)
 
@@ -51,7 +44,7 @@ class ChurnAnalysisService:
         return summary_df
 
 
-    def _get_monthly_counts(self, 
+    def get_monthly_counts(self,
                            df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.PeriodIndex]:
         """Get monthly start and cancellation counts"""
 
@@ -104,7 +97,6 @@ class ChurnAnalysisService:
             'end_column': self.end_column,
             'total_subscriptions': len(self._subscriptions_df) if self._subscriptions_df is not None else 0,
             'total_monthly_records': len(self._monthly_payments_df) if self._monthly_payments_df is not None else 0,
-            'active_filters': self._filter_chain.get_active_filters() if self._filter_chain else [],
             'analysis_date_range': {
                 'start': self._subscriptions_df[self.config.get_column('start_date')].min() if self._subscriptions_df is not None else None,
                 'end': self._subscriptions_df[self.end_column].max() if self._subscriptions_df is not None else None
@@ -113,23 +105,29 @@ class ChurnAnalysisService:
 
 
     def get_customer_data_by_month(self,
-                                   filtered_df: pd.DataFrame,
+                                   df: pd.DataFrame,
                                    all_months: pd.PeriodIndex) -> Tuple[Dict, Dict]:
         """Get customer data organized by month"""
+        start_col = self.config.get_column('start_date')
+        end_col = self.end_column
+
         started_customers = {}
         canceled_customers = {}
+        df = df.copy()
+        df['start_month'] = df[start_col].dt.to_period('M')
+        df['cancel_month'] = df[end_col].dt.to_period('M')
 
         for month in all_months:
             # Customers who started this month
-            start_mask = filtered_df['start_month'] == month
-            started_customers[month] = filtered_df[start_mask][
+            start_mask = df['start_month'] == month
+            started_customers[month] = df[start_mask][
                 ['start_month', self.config.get_column('email'),
                  self.config.get_column('name'), 'cust_id']
             ]
 
             # Customers who canceled this month
-            cancel_mask = filtered_df['cancel_month'] == month
-            canceled_customers[month] = filtered_df[cancel_mask][
+            cancel_mask = df['cancel_month'] == month
+            canceled_customers[month] = df[cancel_mask][
                 ['cancel_month', self.config.get_column('email'),
                  self.config.get_column('name'), 'cust_id']
             ]
@@ -137,20 +135,8 @@ class ChurnAnalysisService:
         return started_customers, canceled_customers
 
 
-    def set_filters(self, filter_chain: FilterChain) -> 'ChurnAnalysisService':
-        """Set the filters to apply to the data"""
-        self._filter_chain = filter_chain
-        return self
-
-    def _apply_filters(self) -> pd.DataFrame:
-        """Apply filters to the subscriptions data"""
-        if self._filter_chain is None:
-            return self._subscriptions_df
-
-        return self._filter_chain.apply(self._subscriptions_df)
-
-
-    def _build_summary(self, starts, cancellations, actives_per_month):
+    @staticmethod
+    def _build_summary(starts, cancellations, actives_per_month):
 
         summary_df = pd.DataFrame({
             'Month': starts.index,
@@ -187,3 +173,6 @@ class ChurnAnalysisService:
         # summary_df['Month'] = summary_df['Month'].astype(str)
         summary_df['Month'] = summary_df['Month'].dt.to_timestamp(how='S')  # month start Timestamp
         return summary_df
+
+
+

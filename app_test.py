@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
 
-from churn_analyzer import ChurnAnalyzer
+from analysis_manager import AnalysisManager
 from filters import (FilterChain, AmountRangeFilter, DurationFilter, 
                     WeeklyFrequencyFilter, LessonTypeFilter)
 from config import Config
@@ -68,7 +68,7 @@ def main():
     with st.spinner("Loading and analyzing data..."):
         try:
             # Initialize analyzer
-            analyzer = ChurnAnalyzer(end_column=ending_column)
+            analyzer = AnalysisManager(end_column=ending_column)
             
             # Load data
             analyzer.load_data()

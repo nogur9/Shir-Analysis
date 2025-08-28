@@ -72,3 +72,6 @@ class ChurnAnalysisResult:
     average_churn_rate: float
     total_revenue_lost: float
 
+
+
+

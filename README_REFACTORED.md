@@ -68,7 +68,16 @@ This is a refactored version of the original churn analysis system, designed wit
   - Active customer counting
   - Churned revenue analysis
 
-#### 6. **FilterChain** (`filters.py`)
+#### 6. **RevenueAnalysisService** (`revenue_analysis_service.py`) ⭐ **NEW**
+- **Purpose**: Computes revenue analysis metrics
+- **Responsibilities**:
+  - Monthly revenue calculations
+  - Churned revenue analysis (RRL)
+  - Customer lifetime value (LTV)
+  - Revenue metrics by lesson type and duration
+  - Revenue distribution analysis
+
+#### 7. **FilterChain** (`filters.py`)
 - **Purpose**: Manages data filtering with a chain of filter objects
 - **Responsibilities**:
   - Filter composition
@@ -93,16 +102,66 @@ This is a refactored version of the original churn analysis system, designed wit
   - Business rules
   - Lesson plan definitions
 
+## Revenue Analysis Features ⭐ **NEW**
+
+### Core Revenue Calculations
+
+The `RevenueAnalysisService` provides comprehensive revenue analysis capabilities:
+
+#### 1. **Monthly Revenue Analysis**
+```python
+# Compute total and monthly revenue
+avg_monthly_rev, revenue_by_month = analyzer.compute_revenue_analysis()
+total_revenue = revenue_by_month.sum()
+```
+
+#### 2. **Churned Revenue Analysis (RRL)**
+```python
+# Calculate recurring revenue lost due to churn
+total_rrl, rrl_by_month = analyzer.compute_churned_revenue("in_advance")
+```
+
+#### 3. **Customer Lifetime Value (LTV)**
+```python
+# Analyze individual customer value
+ltv_metrics = analyzer.get_customer_lifetime_value("customer_id")
+# Returns: total_revenue, average_monthly_revenue, total_months, monthly_trend
+```
+
+#### 4. **Revenue Metrics by Category**
+```python
+# Revenue by lesson type (Private/Group)
+lesson_type_metrics = analyzer.get_revenue_metrics_by_lesson_type()
+
+# Revenue by subscription duration
+duration_metrics = analyzer.get_revenue_metrics_by_duration()
+```
+
+#### 5. **Comprehensive Revenue Summary**
+```python
+# Get complete revenue overview
+revenue_summary = analyzer.get_revenue_summary()
+# Includes: total revenue, averages, distributions, statistics
+```
+
+### Revenue Calculation Logic
+
+The system calculates revenue based on the **LessonPlan** monthly prices:
+
+- **Monthly Payment**: Calculated from `LessonPlan.monthly_price`
+- **Revenue**: `sum(each customer's monthly payment)`
+- **Churned Revenue**: `sum(each churned customer's monthly payment)`
+
 ## Usage Examples
 
 ### Basic Usage
 
 ```python
-from churn_analyzer import ChurnAnalyzer
+from analysis_manager import AnalysisManager
 from filters import FilterChain, AmountRangeFilter
 
 # Initialize analyzer
-analyzer = ChurnAnalyzer()
+analyzer = AnalysisManager()
 
 # Load data
 analyzer.load_data("subscriptions.csv")
@@ -112,8 +171,9 @@ filters = FilterChain()
 filters.add_filter(AmountRangeFilter(100, 1000))
 analyzer.set_filters(filters)
 
-# Compute analysis
+# Compute both churn and revenue analysis
 analyzer.compute_churn_analysis()
+analyzer.compute_revenue_analysis()
 
 # Get results
 churn_summary = analyzer.get_churn_summary()
@@ -121,6 +181,22 @@ revenue_by_month = analyzer.get_revenue_by_month()
 
 # Compute churned revenue
 total_rrl, rrl_by_month = analyzer.compute_churned_revenue("in_advance")
+```
+
+### Advanced Revenue Analysis
+
+```python
+# Get comprehensive revenue metrics
+revenue_summary = analyzer.get_revenue_summary()
+
+# Analyze revenue by lesson type
+lesson_metrics = analyzer.get_revenue_metrics_by_lesson_type()
+for lesson_type, metrics in lesson_metrics.items():
+    print(f"{lesson_type}: ${metrics['total_revenue']:,.2f}")
+
+# Customer lifetime value analysis
+ltv = analyzer.get_customer_lifetime_value("customer_123")
+print(f"Total LTV: ${ltv['total_revenue']:,.2f}")
 ```
 
 ### Advanced Filtering
@@ -164,7 +240,9 @@ analyzer.compute_churn_analysis(from_month, to_month)
    ↓
 5. Churn Analysis (ChurnAnalysisService)
    ↓
-6. Results Aggregation (ChurnAnalyzer)
+6. Revenue Analysis (RevenueAnalysisService) ⭐ NEW
+   ↓
+7. Results Aggregation (ChurnAnalyzer)
 ```
 
 ## File Structure
@@ -175,10 +253,12 @@ analyzer.compute_churn_analysis(from_month, to_month)
 ├── duplication_handler.py     # Duplication management
 ├── lesson_plan_service.py     # Lesson plan operations
 ├── churn_analysis_service.py  # Churn calculations
+├── revenue_analysis_service.py # Revenue calculations ⭐ NEW
 ├── filters.py                 # Data filtering system
 ├── models.py                  # Data structures and enums
 ├── config.py                  # Configuration management
 ├── app_refactored.py          # Refactored Streamlit app
+├── test_revenue_analysis.py   # Test script for revenue analysis ⭐ NEW
 ├── requirements_refactored.txt # Dependencies
 └── README_REFACTORED.md       # This file
 ```
@@ -228,6 +308,13 @@ The system includes comprehensive error handling:
 
 ## Testing and Validation
 
+### Running Tests
+
+```bash
+# Test the revenue analysis functionality
+python test_revenue_analysis.py
+```
+
 ### Data Validation
 
 - Column existence validation
@@ -257,6 +344,7 @@ The system includes comprehensive error handling:
 3. **Data Flow**: Clearer separation between data processing and analysis
 4. **Configuration**: Centralized configuration management
 5. **Error Handling**: Comprehensive error handling and validation
+6. **Revenue Analysis**: Separated into dedicated service ⭐ **NEW**
 
 ### Compatibility
 
@@ -280,6 +368,7 @@ The architecture is designed to be easily extensible:
 - New lesson plan types can be added to the configuration
 - New analysis metrics can be added to the services
 - New data sources can be integrated through the data processor
+- New revenue analysis methods can be added to `RevenueAnalysisService`
 
 ## Support and Maintenance
 
@@ -305,6 +394,6 @@ The refactored churn analysis system provides a solid foundation for business an
 - **Enhanced Functionality**: More robust error handling and validation
 - **Improved Performance**: Efficient data processing and caching
 - **Future-Proof Design**: Easy to extend and modify
+- **Comprehensive Revenue Analysis**: Dedicated service for revenue calculations ⭐ **NEW**
 
 This architecture supports the core business requirements of churn analysis and churned revenue calculation while providing a foundation for future enhancements and integrations.
-

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Union, Optional
+from typing import Union, Optional, Dict, List
 import pandas as pd
 import datetime
 
@@ -187,31 +187,97 @@ class AmountRangeFilter(Filter):
 
 
 class FilterChain:
-    """Chain multiple filters together"""
+    """Chain multiple filters together with row tracking"""
     
-    def __init__(self, filters: Optional[list[Filter]] = None):
+    def __init__(self, filters: Optional[list[Filter]] = None, add_default_filters: Optional[bool]=True):
+        self.add_default_filters = add_default_filters
         self.filters = filters or []
-    
+
+        if self.add_default_filters:
+            for d_filter in self.get_default_filters():
+                self.add_filter(d_filter)
+
+        self.filter_stats: Dict[str, Dict[str, int]] = {}
+
+
+    @staticmethod
+    def get_default_filters() -> List[Filter]:
+        """
+        Apply default filters (test instances, short periods, irrelevant statuses)
+
+        Returns:
+            Self for method chaining
+        """
+        default_filters = [
+            TestInstanceFilter(),
+            ShortPeriodFilter(),
+            StatusFilter(),
+            PaymentAmountFilter(),
+        ]
+
+        return default_filters
+
+
     def add_filter(self, filter_obj: Filter) -> 'FilterChain':
         """Add a filter to the chain"""
         self.filters.append(filter_obj)
         return self
     
     def apply(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Apply all filters to the dataframe"""
+        """Apply all filters to the dataframe with detailed tracking"""
         if not self.filters:
             return df
         
         df = df.copy()
         keep_mask = pd.Series(True, index=df.index)
+        total_rows = len(df)
         
-        for filter_obj in self.filters:
+        # Reset filter stats
+        self.filter_stats = {}
+        
+        for i, filter_obj in enumerate(self.filters):
+            filter_name = filter_obj.get_description()
+            
+            # Apply this filter
             exclude_mask = df.apply(filter_obj.should_exclude, axis=1)
             keep_mask &= ~exclude_mask
+            
+            # Calculate stats for this filter
+            excluded_count = exclude_mask.sum()
+            included_count = keep_mask.sum()
+            
+            self.filter_stats[filter_name] = {
+                'excluded': int(excluded_count),
+                'included': int(included_count),
+                'excluded_percentage': round((excluded_count / total_rows) * 100, 1),
+                'included_percentage': round((included_count / total_rows) * 100, 1)
+            }
+            
+            # Update dataframe for next filter
+            df = df.loc[keep_mask].copy()
         
-        return df.loc[keep_mask].copy()
+        return df
     
     def get_active_filters(self) -> list[str]:
         """Get descriptions of all active filters"""
         return [f.get_description() for f in self.filters]
+    
+    def get_filter_stats(self) -> Dict[str, Dict[str, int]]:
+        """Get detailed statistics for each filter"""
+        return self.filter_stats
+    
+    def get_summary_stats(self) -> Dict[str, int]:
+        """Get overall filtering summary"""
+        if not self.filter_stats:
+            return {}
+        
+        total_excluded = sum(stats['excluded'] for stats in self.filter_stats.values())
+        total_included = list(self.filter_stats.values())[-1]['included'] if self.filter_stats else 0
+        
+        return {
+            'total_filters': len(self.filters),
+            'total_excluded': total_excluded,
+            'total_included': total_included,
+            'total_original': total_excluded + total_included
+        }
 

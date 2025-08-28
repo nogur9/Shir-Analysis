@@ -53,7 +53,16 @@ class DataProcessor:
             self._payments_df['cust_id'] = self._payments_df['Name'] + '-' + self._payments_df['Email']
         
         return self._payments_df
-
+    
+    def load_new_payments(self) -> pd.DataFrame:
+        """Load new payments data"""
+        if self._new_payments_df is None:
+            self._new_payments_df = pd.read_csv(self.config.NEW_PAYMENTS_FILE)
+            self._new_payments_df[self.config.get_column('email')] = self._new_payments_df[self.config.get_column('email')].str.lower()
+            self._new_payments_df[self.config.get_column('name')] = self._new_payments_df[self.config.get_column('name')].str.lower()
+            self._new_payments_df['cust_id'] = self._new_payments_df[self.config.get_column('name')] + '-' + self._new_payments_df[self.config.get_column('email')]
+        
+        return self._new_payments_df
     
     def _validate_columns(self, df: pd.DataFrame) -> None:
         """Validate that required columns exist"""
@@ -154,4 +163,3 @@ class DataProcessor:
     def get_new_payments_df(self) -> pd.DataFrame:
         """Get the new payments dataframe"""
         return self.load_new_payments()
-

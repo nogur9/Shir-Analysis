@@ -5,12 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="major refactor">
-      <change afterPath="$PROJECT_DIR$/app_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/revenue_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README_REFACTORED.md" beforeDir="false" afterPath="$PROJECT_DIR$/README_REFACTORED.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_refactored.py" beforeDir="false" afterPath="$PROJECT_DIR$/app_refactored.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/app_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/churn_analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/churn_analysis_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/churn_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/churn_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/churn_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/duplication_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/duplication_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/filters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/legacy/24-8/duplicates.csv" beforeDir="false" afterPath="$PROJECT_DIR$/legacy/24-8/duplicates.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lesson_plan_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/lesson_plan_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements_refactored.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements_refactored.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/revenue_analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/revenue_analysis_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,34 +58,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.app.executor": "Debug",
-    "Python.app_test.executor": "Run",
-    "Python.consts.executor": "Run",
-    "Python.duplication_analysis.executor": "Debug",
-    "Python.filtering_handler.executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/USER/PycharmProjects/Shir-Analysis",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.app.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.app_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.consts.executor&quot;: &quot;Run&quot;,
+    &quot;Python.duplication_analysis.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.filtering_handler.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/PycharmProjects/Shir-Analysis&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\tests" />
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\legacy\24-8" />
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis" />
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\notebooks" />
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\legacy" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.app_test">
+  <component name="RunManager" selected="Python.main">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Shir-Analysis" />
       <option name="ENV_FILES" value="" />
@@ -188,8 +199,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.app_test" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.app_test" />
         <item itemvalue="Python.app" />
         <item itemvalue="Python.consts" />
         <item itemvalue="Python.duplication_analysis" />
@@ -484,7 +495,15 @@
       <option name="project" value="LOCAL‎" />
       <updated>1756162240690</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL‎-00035" summary="major refactor">
+      <option name="closed" value="true" />
+      <created>1756220034735</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL‎-00035" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756220034735</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -549,19 +568,59 @@
           <option name="timeStamp" value="153" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>93</line>
-          <option name="timeStamp" value="155" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>95</line>
-          <option name="timeStamp" value="157" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/churn_analysis_service.py</url>
           <line>14</line>
           <option name="timeStamp" value="162" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>232</line>
+          <option name="timeStamp" value="172" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>250</line>
+          <option name="timeStamp" value="174" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>268</line>
+          <option name="timeStamp" value="176" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>269</line>
+          <option name="timeStamp" value="177" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>17</line>
+          <option name="timeStamp" value="178" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
+          <line>126</line>
+          <option name="timeStamp" value="181" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>45</line>
+          <option name="timeStamp" value="183" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>72</line>
+          <option name="timeStamp" value="184" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
+          <line>123</line>
+          <option name="timeStamp" value="185" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>261</line>
+          <option name="timeStamp" value="186" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
