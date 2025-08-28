@@ -1,10 +1,7 @@
 import pandas as pd
 import datetime
 from typing import Optional, Dict, Any
-from pathlib import Path
-
 from config import Config
-from models import LessonPlan, LessonType, Customer
 
 
 class DataProcessor:
@@ -14,8 +11,7 @@ class DataProcessor:
         self.config = Config()
         self._subscriptions_df: Optional[pd.DataFrame] = None
         self._payments_df: Optional[pd.DataFrame] = None
-        self._new_payments_df: Optional[pd.DataFrame] = None
-        
+
     def load_subscriptions(self, file_path: str) -> pd.DataFrame:
         """Load and preprocess subscriptions data"""
         df = pd.read_csv(file_path).copy()
@@ -53,17 +49,8 @@ class DataProcessor:
             self._payments_df['cust_id'] = self._payments_df['Name'] + '-' + self._payments_df['Email']
         
         return self._payments_df
-    
-    def load_new_payments(self) -> pd.DataFrame:
-        """Load new payments data"""
-        if self._new_payments_df is None:
-            self._new_payments_df = pd.read_csv(self.config.NEW_PAYMENTS_FILE)
-            self._new_payments_df[self.config.get_column('email')] = self._new_payments_df[self.config.get_column('email')].str.lower()
-            self._new_payments_df[self.config.get_column('name')] = self._new_payments_df[self.config.get_column('name')].str.lower()
-            self._new_payments_df['cust_id'] = self._new_payments_df[self.config.get_column('name')] + '-' + self._new_payments_df[self.config.get_column('email')]
-        
-        return self._new_payments_df
-    
+
+
     def _validate_columns(self, df: pd.DataFrame) -> None:
         """Validate that required columns exist"""
         required_columns = [
@@ -159,7 +146,3 @@ class DataProcessor:
     def get_payments_df(self) -> pd.DataFrame:
         """Get the payments dataframe"""
         return self.load_payments()
-    
-    def get_new_payments_df(self) -> pd.DataFrame:
-        """Get the new payments dataframe"""
-        return self.load_new_payments()

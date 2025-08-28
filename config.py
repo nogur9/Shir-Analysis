@@ -5,13 +5,12 @@ import os
 
 class Config:
     """Centralized configuration for the churn analysis system"""
-    
+
     # File paths
-    SUBSCRIPTIONS_FILE = "legacy/24-8/subscriptions.csv"
-    PAYMENTS_FILE = "legacy/24-8/payments.csv"
-    NEW_PAYMENTS_FILE = "legacy/24-8/subscriptions_new.csv"
-    DUPLICATES_HANDLING_FILE = "legacy/24-8/handling_duplicates.xlsx"
-    DUPLICATES_OUTPUT_FILE = "legacy/24-8/duplicates.csv"
+    SUBSCRIPTIONS_FILE = "data/subscriptions.csv"
+    PAYMENTS_FILE = "data/payments.csv"
+    DUPLICATES_HANDLING_FILE = "data/handling_duplicates.xlsx"
+    DUPLICATES_OUTPUT_FILE = "data/duplicates.csv"
     
     # Column names
     COLUMNS = {
