@@ -1,13 +1,13 @@
 import pandas as pd
+import numpy as np
 import streamlit as st
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import numpy as np
 
+from config import Config
 from analysis_manager import AnalysisManager
 from filters import (FilterChain, AmountRangeFilter, DurationFilter, 
                     WeeklyFrequencyFilter, LessonTypeFilter)
-from config import Config
 
 
 def main():
@@ -45,42 +45,34 @@ def main():
     
     times_a_week = st.sidebar.selectbox("Weekly Times", ['all', 1, 2], index=0)
     lesson_type = st.sidebar.selectbox("Lesson Type", ['all', 'Group', 'Private'], index=0)
-    
-    # Build filter chain
-    filter_chain = FilterChain()
-    
+
     # Add filters based on user selection
-    filter_chain.add_filter(AmountRangeFilter(min_amount, max_amount))
-    filter_chain.add_filter(DurationFilter(min_dur_months, max_dur_months))
+    filters = [AmountRangeFilter(min_amount, max_amount), DurationFilter(min_dur_months, max_dur_months)]
     
     if times_a_week != 'all':
-        filter_chain.add_filter(WeeklyFrequencyFilter(times_a_week))
+        filters.append(WeeklyFrequencyFilter(times_a_week))
     
     if lesson_type != 'all':
-        filter_chain.add_filter(LessonTypeFilter(lesson_type))
-    
-    # Display active filters
-    st.sidebar.subheader("Active Filters")
-    for filter_desc in filter_chain.get_active_filters():
-        st.sidebar.write(f"• {filter_desc}")
-    
+        filters.append(LessonTypeFilter(lesson_type))
+
     # Main analysis
     with st.spinner("Loading and analyzing data..."):
         try:
-            # Initialize analyzer
-            analyzer = AnalysisManager(end_column=ending_column)
-            
-            # Load data
+            # Initialize analyzer & Load data
+            analyzer = AnalysisManager(filters)
             analyzer.load_data()
-            
-            # Apply filters
-            analyzer.set_filters(filter_chain)
-            
+
             # Compute analysis
             analyzer.compute_churn_analysis()
             
             # Get results
             churn_summary = analyzer.get_churn_summary()
+
+            # Display active filters
+            st.sidebar.subheader("Active Filters")
+            for filter_desc in analyzer._filter_chain.get_active_filters():
+                st.sidebar.write(f"• {filter_desc}")
+
 
             # Display success message
             st.success("Analysis completed successfully!")

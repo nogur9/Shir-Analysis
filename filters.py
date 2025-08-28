@@ -138,13 +138,22 @@ class DurationFilter(Filter):
     def __init__(self, min_months: int, max_months: int):
         self.min_months = min_months
         self.max_months = max_months
-    
+        self.monthly_payments_df = None
+
+    def add_monthly_payments_df (self, monthly_payments_df:pd.DataFrame):
+        self.monthly_payments_df = monthly_payments_df
+
     def should_exclude(self, row: pd.Series) -> bool:
-        lesson_plan = row.get('Lesson')
-        if lesson_plan is None:
+        if self.monthly_payments_df is None:
+            raise ValueError("need monthly payments to analyze monthly plan")
+        start = 'Start Date (UTC)'
+        res = self.monthly_payments_df[self.monthly_payments_df.cust_id == row.cust_id]
+        if res.shape[0] == 0:
+            print(f"Empty Lesson Plan cust id = {row.cust_id}")
             return True
-        
-        return (lesson_plan.duration_months < self.min_months or 
+        lesson_plan = res.loc[res[start].idxmax()]['Lesson']
+
+        return (lesson_plan.duration_months < self.min_months or
                 lesson_plan.duration_months > self.max_months)
     
     def get_description(self) -> str:
@@ -189,7 +198,8 @@ class AmountRangeFilter(Filter):
 class FilterChain:
     """Chain multiple filters together with row tracking"""
     
-    def __init__(self, filters: Optional[list[Filter]] = None, add_default_filters: Optional[bool]=True):
+    def __init__(self, filters: Optional[list[Filter]] = None,
+                 add_default_filters: Optional[bool]=True):
         self.add_default_filters = add_default_filters
         self.filters = filters or []
 
@@ -223,11 +233,15 @@ class FilterChain:
         self.filters.append(filter_obj)
         return self
     
-    def apply(self, df: pd.DataFrame) -> pd.DataFrame:
+    def apply(self, df: pd.DataFrame, _monthly_payments_df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
         """Apply all filters to the dataframe with detailed tracking"""
         if not self.filters:
             return df
-        
+
+        if any([type(filter) == DurationFilter for filter in self.filters]):
+            if _monthly_payments_df is None:
+                raise ValueError("need monthly payments to analyze monthly plan")
+
         df = df.copy()
         keep_mask = pd.Series(True, index=df.index)
         total_rows = len(df)
@@ -236,6 +250,9 @@ class FilterChain:
         self.filter_stats = {}
         
         for i, filter_obj in enumerate(self.filters):
+            if type(filter_obj) == DurationFilter:
+                filter_obj.add_monthly_payments_df(_monthly_payments_df)
+
             filter_name = filter_obj.get_description()
             
             # Apply this filter

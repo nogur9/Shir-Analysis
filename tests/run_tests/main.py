@@ -1,9 +1,12 @@
 from analysis_manager import AnalysisManager
-from filters import AmountRangeFilter
+from filters import AmountRangeFilter, DurationFilter
+
+# Add filters based on user selection
+filters = [AmountRangeFilter(60, 2000), DurationFilter(0, 13)]
 
 # Initialize and load data
-analyzer = AnalysisManager(filters=[AmountRangeFilter(100, 1000)])
-analyzer = analyzer.load_data("subscriptions_new.csv")
+analyzer = AnalysisManager(filters)
+analyzer = analyzer.load_data()
 
 analyzer.compute_churn_analysis()
 analyzer.compute_revenue_analysis()

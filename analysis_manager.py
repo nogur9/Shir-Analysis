@@ -1,12 +1,11 @@
 from typing import Optional, Dict, Tuple
 import pandas as pd
-
 from data_processor import DataProcessor
 from duplication_handler import DuplicationHandler
 from lesson_plan_service import LessonPlanService
 from churn_analysis_service import ChurnAnalysisService
 from revenue_analysis_service import RevenueAnalysisService
-from filters import FilterChain, TestInstanceFilter, ShortPeriodFilter, StatusFilter, PaymentAmountFilter, Filter
+from filters import FilterChain, Filter
 from config import Config
 
 
@@ -74,13 +73,12 @@ class AnalysisManager:
             self.duplication_handler.plan_switch,
         )
 
-        self._subscriptions_df = self._filter_chain.apply(self._subscriptions_df)
+        self._subscriptions_df = self._filter_chain.apply(self._subscriptions_df, self._monthly_payments_df)
         self._monthly_payments_df = self._apply_filters_to_monthly_data(self._monthly_payments_df)
 
         # Set data in services
         self.churn_analysis_service.set_data(self._subscriptions_df, self._monthly_payments_df)
         self.revenue_analysis_service.set_data(self._subscriptions_df, self._monthly_payments_df)
-
 
         return self
         #
