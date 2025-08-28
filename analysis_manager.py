@@ -75,7 +75,6 @@ class AnalysisManager:
         )
 
         self._subscriptions_df = self._filter_chain.apply(self._subscriptions_df)
-
         self._monthly_payments_df = self._apply_filters_to_monthly_data(self._monthly_payments_df)
 
         # Set data in services

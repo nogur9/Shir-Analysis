@@ -206,12 +206,12 @@ class RevenueAnalysisService:
             'max': float(revenue_by_month.max()),
             'std': float(revenue_by_month.std())
         }
-        
-        # Lesson type distribution
-        lesson_type_distribution = self._monthly_payments_df['lesson_type'].value_counts().to_dict()
-        
-        # Duration distribution
-        duration_distribution = self._monthly_payments_df['duration_months'].value_counts().to_dict()
+        #
+        # # Lesson type distribution
+        # lesson_type_distribution = self._monthly_payments_df['lesson_type'].value_counts().to_dict()
+        #
+        # # Duration distribution
+        # duration_distribution = self._monthly_payments_df['duration_months'].value_counts().to_dict()
         
         return {
             'total_revenue': float(total_revenue),
@@ -219,8 +219,8 @@ class RevenueAnalysisService:
             'total_customers': int(total_customers),
             'total_months': int(total_months),
             'revenue_range': revenue_range,
-            'lesson_type_distribution': lesson_type_distribution,
-            'duration_distribution': duration_distribution,
+            # 'lesson_type_distribution': lesson_type_distribution,
+            # 'duration_distribution': duration_distribution,
             'monthly_revenue_series': revenue_by_month
         }
 
