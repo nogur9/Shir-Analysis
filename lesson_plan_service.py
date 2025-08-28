@@ -56,11 +56,12 @@ class LessonPlanService:
         df['Lesson'] = df[amount_column].apply(self.find_lesson_plan_by_amount)
         
         # Add lesson plan metadata
+        df['lesson_label'] = df['Lesson'].apply(lambda x: x.label if x else None)
         df['lesson_type'] = df['Lesson'].apply(lambda x: x.lesson_type.value if x else None)
         df['duration_months'] = df['Lesson'].apply(lambda x: x.duration_months if x else None)
         df['times_per_week'] = df['Lesson'].apply(lambda x: x.times_per_week if x else None)
         df['monthly_price'] = df['Lesson'].apply(lambda x: x.monthly_price if x else None)
-        
+
         return df
     
     def build_monthly_payments_dataframe(self, 
@@ -82,7 +83,7 @@ class LessonPlanService:
         
         # Remove rows without lesson plans
         payments = payments[payments['Lesson'].notna()].copy()
-        
+
         # Calculate contract periods
         payments = self._calculate_contract_periods(payments)
         
@@ -174,9 +175,11 @@ class LessonPlanService:
         # Explode to monthly rows
         exploded = payments.explode('month_list', ignore_index=True)
         exploded = exploded.rename(columns={'month_list': 'month'})
-        
+
+        columns = [customer_id_col, 'month', start, 'lesson_label', 'lesson_type',
+                   'duration_months', 'times_per_week', 'monthly_price', 'Lesson']
         # Select relevant columns
-        result = exploded[[customer_id_col, 'month', 'Lesson', 'monthly_price', start]]
+        result = exploded[columns]
         
         # Handle multiple rows per customer-month (keep latest plan)
         result = result.sort_values([customer_id_col, 'month', start])
@@ -192,20 +195,21 @@ class LessonPlanService:
         """Get summary statistics of lesson plans in the data"""
         if 'Lesson' not in df.columns:
             return {}
-        
-        lesson_counts = df['Lesson'].value_counts()
+        df = df.copy()
+        lesson_counts = df['lesson_label'].value_counts()
         lesson_type_counts = df['lesson_type'].value_counts()
         duration_counts = df['duration_months'].value_counts()
         frequency_counts = df['times_per_week'].value_counts()
         
         return {
-            'total_lessons': len(df),
-            'lesson_plan_distribution': lesson_counts.to_dict(),
+            'total_monthly_payments': len(df),
             'lesson_type_distribution': lesson_type_counts.to_dict(),
             'duration_distribution': duration_counts.to_dict(),
             'frequency_distribution': frequency_counts.to_dict(),
             'average_monthly_price': df['monthly_price'].mean(),
-            'total_monthly_revenue': df['monthly_price'].sum()
+            'total_monthly_revenue': df['monthly_price'].sum(),
+            'lesson_plan_distribution': lesson_counts.to_dict(),
+            'monthly_price_distribution': df['monthly_price']
         }
 
     def _apply_plan_switch(self, payments, plan_switch):

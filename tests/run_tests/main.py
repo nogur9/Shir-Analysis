@@ -11,6 +11,11 @@ analyzer = analyzer.load_data()
 analyzer.compute_churn_analysis()
 analyzer.compute_revenue_analysis()
 
-# Get revenue metrics
-revenue_summary = analyzer.get_revenue_summary()
+# Get all metrics
 churn_summary = analyzer.get_churn_summary()
+revenue_summary = analyzer.get_revenue_summary()
+
+# analyzer.get_analysis_summary()
+# analyzer.get_duplication_summary()
+lesson_summary = analyzer.get_lesson_plan_summary()
+

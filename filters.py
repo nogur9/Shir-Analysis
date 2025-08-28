@@ -149,7 +149,7 @@ class DurationFilter(Filter):
         start = 'Start Date (UTC)'
         res = self.monthly_payments_df[self.monthly_payments_df.cust_id == row.cust_id]
         if res.shape[0] == 0:
-            print(f"Empty Lesson Plan cust id = {row.cust_id}")
+            # print(f"Empty Lesson Plan cust id = {row.cust_id}")
             return True
         lesson_plan = res.loc[res[start].idxmax()]['Lesson']
 

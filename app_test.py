@@ -62,10 +62,8 @@ def main():
             analyzer = AnalysisManager(filters)
             analyzer.load_data()
 
-            # Compute analysis
+            # Compute churn
             analyzer.compute_churn_analysis()
-            
-            # Get results
             churn_summary = analyzer.get_churn_summary()
 
             # Display active filters
