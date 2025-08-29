@@ -51,7 +51,10 @@ class LessonPlanService:
     def apply_lesson_plans_to_dataframe(self, df: pd.DataFrame, amount_column: str = 'Amount') -> pd.DataFrame:
         """Apply lesson plan information to dataframe"""
         df = df.copy()
-        
+
+
+
+
         # Map amounts to lesson plans
         df['Lesson'] = df[amount_column].apply(self.find_lesson_plan_by_amount)
         
@@ -60,7 +63,7 @@ class LessonPlanService:
         df['lesson_type'] = df['Lesson'].apply(lambda x: x.lesson_type.value if x else None)
         df['duration_months'] = df['Lesson'].apply(lambda x: x.duration_months if x else None)
         df['times_per_week'] = df['Lesson'].apply(lambda x: x.times_per_week if x else None)
-        df['monthly_price'] = df['Lesson'].apply(lambda x: x.monthly_price if x else None)
+        df['monthly_price'] = df[amount_column] / df['duration_months']
 
         return df
     

@@ -29,12 +29,6 @@ class LessonPlan:
         """Check if amount matches this lesson plan"""
         return amount in self.cost_options
     
-    @property
-    def monthly_price(self) -> Optional[float]:
-        """Calculate monthly price from cost options"""
-        if self.cost_options:
-            return min(self.cost_options) / self.duration_months
-        return None
 
 
 @dataclass
