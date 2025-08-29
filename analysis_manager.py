@@ -244,12 +244,14 @@ class AnalysisManager:
 
         return self.duplication_handler.get_duplication_summary(self._subscriptions_df)
 
-    def get_lesson_plan_summary(self) -> Dict:
+    def get_lesson_plan_summary(self, monthly_pay:Optional[pd.DataFrame]=None) -> Dict:
         """Get summary of lesson plans in the data"""
         if self._monthly_payments_df is None:
             raise ValueError("Must load data first. Call load_data() before this method.")
-
-        return self.lesson_plan_service.get_lesson_plan_summary(self._monthly_payments_df)
+        if monthly_pay is None:
+            return self.lesson_plan_service.get_lesson_plan_summary(self._monthly_payments_df)
+        else:
+            return self.lesson_plan_service.get_lesson_plan_summary(monthly_pay)
 
     def export_data(self, base_filename: str = "churn_analysis") -> Dict[str, str]:
         """

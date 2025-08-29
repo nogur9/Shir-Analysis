@@ -120,13 +120,21 @@ class LessonTypeFilter(Filter):
     
     def __init__(self, lesson_type: Union[str, LessonType]):
         self.lesson_type = lesson_type if isinstance(lesson_type, str) else lesson_type.value
-    
+        self.monthly_payments_df = None
+
+    def add_monthly_payments_df (self, monthly_payments_df:pd.DataFrame):
+        self.monthly_payments_df = monthly_payments_df
+
     def should_exclude(self, row: pd.Series) -> bool:
-        lesson_plan = row.get('Lesson')
-        if lesson_plan is None:
+        if self.monthly_payments_df is None:
+            raise ValueError("need monthly payments to analyze monthly plan")
+        start = 'Start Date (UTC)'
+        res = self.monthly_payments_df[self.monthly_payments_df.cust_id == row.cust_id]
+        if res.shape[0] == 0:
+            # print(f"Empty Lesson Plan cust id = {row.cust_id}")
             return True
-        
-        return lesson_plan.lesson_type != self.lesson_type
+        lesson_plan = res.loc[res[start].idxmax()]['Lesson']
+        return lesson_plan.lesson_type.value != self.lesson_type
     
     def get_description(self) -> str:
         return f"Only include {self.lesson_type} lessons"
@@ -165,12 +173,20 @@ class WeeklyFrequencyFilter(Filter):
     
     def __init__(self, times_per_week: int):
         self.times_per_week = times_per_week
-    
+        self.monthly_payments_df = None
+
+    def add_monthly_payments_df (self, monthly_payments_df:pd.DataFrame):
+        self.monthly_payments_df = monthly_payments_df
+
     def should_exclude(self, row: pd.Series) -> bool:
-        lesson_plan = row.get('Lesson')
-        if lesson_plan is None:
+        if self.monthly_payments_df is None:
+            raise ValueError("need monthly payments to analyze monthly plan")
+        start = 'Start Date (UTC)'
+        res = self.monthly_payments_df[self.monthly_payments_df.cust_id == row.cust_id]
+        if res.shape[0] == 0:
+            # print(f"Empty Lesson Plan cust id = {row.cust_id}")
             return True
-        
+        lesson_plan = res.loc[res[start].idxmax()]['Lesson']
         return lesson_plan.times_per_week != self.times_per_week
     
     def get_description(self) -> str:
@@ -238,7 +254,8 @@ class FilterChain:
         if not self.filters:
             return df
 
-        if any([type(filter) == DurationFilter for filter in self.filters]):
+        lesson_filters = [DurationFilter, LessonTypeFilter, WeeklyFrequencyFilter]
+        if any([type(filter) in lesson_filters for filter in self.filters]):
             if _monthly_payments_df is None:
                 raise ValueError("need monthly payments to analyze monthly plan")
 
@@ -250,7 +267,7 @@ class FilterChain:
         self.filter_stats = {}
         
         for i, filter_obj in enumerate(self.filters):
-            if type(filter_obj) == DurationFilter:
+            if type(filter_obj) in lesson_filters:
                 filter_obj.add_monthly_payments_df(_monthly_payments_df)
 
             filter_name = filter_obj.get_description()

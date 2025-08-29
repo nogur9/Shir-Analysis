@@ -27,9 +27,9 @@ def main():
     st.sidebar.subheader("🔍 Data Filters")
     min_dur_months, max_dur_months = st.sidebar.slider(
         "Filter by Subscription Duration (Months)", 
-        min_value=0, 
-        max_value=13,
-        value=(0, 13),
+        min_value=1,
+        max_value=12,
+        value=(1, 12),
         help="Only include customers with subscription duration in this range"
     )
     min_amount, max_amount = st.sidebar.slider(
@@ -37,7 +37,8 @@ def main():
         min_value=60, 
         max_value=2000,
         value=(60, 2000),
-        help="Only include customers with payment amounts in this range"
+        help="Only include customers with payment amounts in this range",
+
     )
     times_a_week = st.sidebar.selectbox(
         "Weekly Lesson Frequency", 
@@ -53,7 +54,7 @@ def main():
     )
     from_month_input = st.sidebar.text_input(
         "From month (YYYY-MM)",
-        value="2023-03",
+        value="2023-09",
         help="Trim charts and tables to show months from this month onward (display only)"
     )
     try:
@@ -78,9 +79,12 @@ def main():
             revenue_summary = analyzer.get_revenue_summary()
             revenue_by_month = analyzer.get_revenue_by_month()
             total_rrl, rrl_by_month = analyzer.compute_churned_revenue()
- 
+
             analysis_summary = analyzer.get_analysis_summary()
-            mp = analyzer.revenue_analysis_service._monthly_payments_df
+            monthly_pay = analyzer.revenue_analysis_service._monthly_payments_df
+            monthly_pay = monthly_pay[monthly_pay['month'] >= from_month_ts]
+            lesson_summary = analyzer.get_lesson_plan_summary(monthly_pay)
+
             canceled_ids = set()
             # reconstruct canceled ids from rrl inputs by collecting all canceled map entries
             started_map, canceled_map = analyzer.churn_analysis_service.get_customer_data_by_month(
@@ -197,7 +201,7 @@ def main():
             # Revenue by lesson type (mean)
             with st.expander("🎯 Mean Revenue by Lesson Type"):
                 try:
-                    mean_rev_by_lt = mp.groupby('lesson_type')['monthly_price'].mean().round(2).rename('Avg_Monthly_Revenue').reset_index()
+                    mean_rev_by_lt = monthly_pay.groupby('lesson_type')['monthly_price'].mean().round(2).rename('Avg_Monthly_Revenue').reset_index()
                     st.dataframe(mean_rev_by_lt, use_container_width=True)
                     st.download_button("Download Revenue by Lesson Type (CSV)", data=mean_rev_by_lt.to_csv(index=False).encode('utf-8'), file_name="revenue_by_lesson_type.csv")
                 except Exception:
@@ -216,7 +220,7 @@ def main():
             with col2:
                 try:
                     canceled_ids.update([cid for dfm in canceled_map.values() for cid in dfm['cust_id'].dropna().unique()])
-                    mp_canceled = mp[mp['cust_id'].isin(list(canceled_ids))]
+                    mp_canceled = monthly_pay[monthly_pay['cust_id'].isin(list(canceled_ids))]
                     churn_mean_by_lesson = mp_canceled.groupby('lesson_type')['monthly_price'].mean().round(2).rename('Avg_Monthly_Spend').reset_index()
                     st.write("**Mean Churned Revenue by Lesson Type**")
                     st.dataframe(churn_mean_by_lesson, use_container_width=True)
@@ -235,11 +239,34 @@ def main():
                 with col3:
                     st.metric("Min Churn Rate", f"{(churn_summary['Churn_Rate'].min()*100):.2f}%")
 
+
+            with st.expander("**Lesson Plan Summary**"):
+                if lesson_summary:
+                    st.write(f"Count of monthly payments: {lesson_summary['lesson_type_distribution']}")
+                    st.write(f"Count of monthly payments: {lesson_summary['duration_distribution']}")
+                    st.write(f"Count of monthly payments: {lesson_summary['frequency_distribution']}")
+                    st.write(f"Average monthly price: ${lesson_summary['average_monthly_price']:.2f}")
+                    st.write(f"Total monthly revenue: ${lesson_summary['total_monthly_revenue']:.2f}")
+                    st.write(f"Count of monthly payments: {lesson_summary['total_monthly_payments']}")
+                    fig =  payment_hist(lesson_summary['monthly_price_distribution'])
+                    st.plotly_chart(fig, use_container_width=True)
+
+                else:
+                    st.write("No lesson plan data available")
+
+
             with st.expander("📄 Monthly Churn Summary (dataframe)"):
                 nice_churn = churn_summary[['Month', 'Starts', 'Cancellations', 'Actives', 'Churn_Rate']].copy()
                 nice_churn['Churn_Rate'] = (nice_churn['Churn_Rate'] * 100).round(2).astype(str) + '%'
                 st.dataframe(nice_churn, use_container_width=True)
-                st.download_button("Download Churn Summary (CSV)", data=nice_churn.to_csv(index=False).encode('utf-8'), file_name="churn_summary.csv")
+                st.download_button("Download Churn Summary (CSV)", data=churn_summary.to_csv(index=False).encode('utf-8'), file_name="churn_summary.csv")
+
+
+            with st.expander("📄 Revenue Summary (dataframe)"):
+                nice_revenue = rrl_by_month.merge(revenue_by_month, left_on='loss_month', right_on='month')
+                st.dataframe(nice_revenue, use_container_width=True)
+                st.download_button("Download Revenue Summary (CSV)", data=nice_revenue.to_csv(index=False).encode('utf-8'), file_name="revenue_summary.csv")
+
 
             # Started & Cancelled customers (separate expanders)
             with st.expander("👤 Started Customers by Month"):
@@ -267,6 +294,17 @@ def main():
         with st.expander("Duplication Summary"):
             dup_summary = analyzer.duplication_handler.get_duplication_summary()
             st.dataframe(dup_summary, use_container_width=True)
+
+        st.subheader("📜 Analytical Raw Data")
+        with st.expander("📄 Churn dataframe"):
+            st.dataframe(analyzer._subscriptions_df, use_container_width=True)
+            st.download_button("Download Churn Raw Data (CSV)", data=analyzer._subscriptions_df.to_csv(index=False).encode('utf-8'), file_name="churn_raw_data.csv")
+
+
+        with st.expander("📄 Revenue Raw Data"):
+            st.dataframe(analyzer._monthly_payments_df, use_container_width=True)
+            st.download_button("Download Revenue Raw Data (CSV)", data=analyzer._monthly_payments_df.to_csv(index=False).encode('utf-8'), file_name="revenue_raw_data.csv")
+
 
 
 def create_full_overview_chart(summary_df: pd.DataFrame) -> go.Figure:
@@ -303,6 +341,30 @@ def create_churn_rate_chart(summary_df: pd.DataFrame) -> go.Figure:
     fig.update_layout(title="Customer Retention & Churn Rate Over Time", legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0), margin=dict(t=60, r=20, b=40, l=50), height=400)
     fig.update_yaxes(title_text="Active Customers", secondary_y=False)
     fig.update_yaxes(title_text="Churn Rate", tickformat=".0%", secondary_y=True)
+    return fig
+
+
+def payment_hist(x: pd.Series):
+    x = x.dropna().astype(float)
+    fig = go.Figure()
+    fig.add_trace(
+        go.Histogram(
+            x=x,
+            nbinsx=30,
+            histnorm=None,  # None | 'percent' | 'probability density'
+            name="Monthly payment",
+            hovertemplate="Payment: %{x:.2f}<br>Value: %{y:.2f}<extra></extra>",
+        )
+    )
+
+    fig.update_layout(
+        title="Distribution of Monthly Payments",
+        xaxis_title="Monthly payment",
+        yaxis_title="Customers",
+        bargap=0.05,
+        template="plotly_white",
+        xaxis=dict(rangeslider=dict(visible=False)),
+    )
     return fig
 
 

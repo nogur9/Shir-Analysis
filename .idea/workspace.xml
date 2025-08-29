@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="fixed lesson type - obj">
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="app.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app_test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/churn_analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/churn_analysis_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/duplication_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/duplication_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lesson_plan_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/lesson_plan_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements_refactored.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements_refactored.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/revenue_analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/revenue_analysis_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/filters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/run_tests/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/run_tests/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +48,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Python.app.executor": "Run",
+    "Python.app.executor": "Debug",
     "Python.app_test (1).executor": "Debug",
     "Python.app_test.executor": "Run",
     "Python.consts.executor": "Run",
@@ -66,7 +60,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/USER/PycharmProjects/Shir-Analysis",
+    "last_opened_file_path": "C:/Users/USER/Downloads",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable"
   }
 }]]></component>
@@ -82,7 +76,7 @@
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\notebooks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.app">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Shir-Analysis" />
       <option name="ENV_FILES" value="" />
@@ -129,8 +123,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.app" />
+        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -470,7 +464,23 @@
       <option name="project" value="LOCAL‎" />
       <updated>1756388825910</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL‎-00041" summary="app.py">
+      <option name="closed" value="true" />
+      <created>1756465556309</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL‎-00041" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756465556309</updated>
+    </task>
+    <task id="LOCAL‎-00042" summary="app.py">
+      <option name="closed" value="true" />
+      <created>1756465590242</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL‎-00042" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756465590242</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -494,7 +504,8 @@
     <MESSAGE value="organized" />
     <MESSAGE value="fixed duration filter" />
     <MESSAGE value="fixed lesson type - obj" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed lesson type - obj" />
+    <MESSAGE value="app.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="app.py" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -541,18 +552,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/run_tests/main.py</url>
-          <line>7</line>
-          <option name="timeStamp" value="222" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/run_tests/main.py</url>
           <line>8</line>
           <option name="timeStamp" value="223" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
-          <line>67</line>
-          <option name="timeStamp" value="224" />
+          <url>file://$PROJECT_DIR$/tests/run_tests/main.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="227" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app.py</url>
+          <line>82</line>
+          <option name="timeStamp" value="233" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="235" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
+          <line>197</line>
+          <option name="timeStamp" value="236" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
+          <line>198</line>
+          <option name="timeStamp" value="237" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

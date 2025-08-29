@@ -1,8 +1,8 @@
 from analysis_manager import AnalysisManager
-from filters import AmountRangeFilter, DurationFilter
+from filters import AmountRangeFilter, DurationFilter, LessonTypeFilter
 
 # Add filters based on user selection
-filters = [AmountRangeFilter(60, 2000), DurationFilter(0, 13)]
+filters = [AmountRangeFilter(60, 2000), DurationFilter(0, 13), LessonTypeFilter('Private')]
 
 # Initialize and load data
 analyzer = AnalysisManager(filters)
