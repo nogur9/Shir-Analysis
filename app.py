@@ -183,7 +183,7 @@ def main():
                 st.write(f"• **Lowest Monthly Revenue:** ${revenue_summary['revenue_range']['min']:,.2f}")
                 st.write(f"• **Average Monthly Revenue:** ${revenue_summary['revenue_range']['average']:,.2f}")
                 st.write(f"• **Revenue Variability:** ${revenue_summary['revenue_range']['std']:,.2f}")
-                st.write(f"\n• **Average Monthly Price:** ${revenue_summary['avg_monthly_price']['std']:,.2f}")
+                st.write(f"\n• **Average Monthly Price:** ${revenue_summary['avg_monthly_price']:,.2f}")
             with col2:
                 st.write("**📈 Revenue by Month (with Churned)**")
                 rev_df = revenue_by_month.reset_index(); rev_df.columns = ['Month', 'Revenue']
