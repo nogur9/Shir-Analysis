@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="app.py">
+    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="end">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/duplication_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/duplication_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/duplicates.csv" beforeDir="false" afterPath="$PROJECT_DIR$/duplicates.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +74,7 @@
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\notebooks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main (1)">
+  <component name="RunManager" selected="Python.app">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Shir-Analysis" />
       <option name="ENV_FILES" value="" />
@@ -143,8 +143,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.app" />
+        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
@@ -541,7 +541,15 @@
       <option name="project" value="LOCAL‎" />
       <updated>1756469420161</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL‎-00048" summary="end">
+      <option name="closed" value="true" />
+      <created>1756479544698</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL‎-00048" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756479544698</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -566,7 +574,8 @@
     <MESSAGE value="fixed duration filter" />
     <MESSAGE value="fixed lesson type - obj" />
     <MESSAGE value="app.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="app.py" />
+    <MESSAGE value="end" />
+    <option name="LAST_COMMIT_MESSAGE" value="end" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -647,12 +656,6 @@
           <option name="timeStamp" value="269" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="'mekarenmok@yahoo.com' in group_data[&quot;Customer Email&quot;].to_list()" language="Python" />
-          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
-          <line>146</line>
-          <option name="timeStamp" value="276" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
           <line>77</line>
           <option name="timeStamp" value="279" />
@@ -668,14 +671,31 @@
           <option name="timeStamp" value="282" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
-          <line>164</line>
-          <option name="timeStamp" value="285" />
+          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
+          <line>67</line>
+          <option name="timeStamp" value="287" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="'dunnioiyari@gmail.com' in group_data[&quot;Customer Email&quot;].to_list()" language="Python" />
           <url>file://$PROJECT_DIR$/duplication_handler.py</url>
-          <line>163</line>
-          <option name="timeStamp" value="286" />
+          <line>146</line>
+          <option name="timeStamp" value="289" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="294" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="'dunnioiyari@gmail.com' in idx" language="Python" />
+          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
+          <line>224</line>
+          <option name="timeStamp" value="296" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
+          <line>231</line>
+          <option name="timeStamp" value="297" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
