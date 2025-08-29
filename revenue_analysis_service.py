@@ -214,7 +214,7 @@ class RevenueAnalysisService:
             'min': float(revenue_by_month.min()),
             'max': float(revenue_by_month.max()),
             'std': float(revenue_by_month.std()),
-            'average': float(revenue_by_month.average())
+            'average': float(revenue_by_month.mean())
         }
 
         # Lesson type distribution
