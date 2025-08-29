@@ -18,12 +18,7 @@ def main():
     config = Config()
     
     st.sidebar.header("⚙️ Analysis Configuration")
-    ending_column = st.sidebar.selectbox(
-        label="Select cancellation column", 
-        options=[config.get_column('canceled_date'), config.get_column('ended_date')],
-        help="Choose which date column to use for determining when customers ended their subscriptions"
-    )
-    
+
     st.sidebar.subheader("🔍 Data Filters")
     min_dur_months, max_dur_months = st.sidebar.slider(
         "Filter by Subscription Duration (Months)", 
@@ -199,7 +194,7 @@ def main():
                 st.download_button("Download Revenue Table (CSV)", data=rev_df.to_csv(index=False).encode('utf-8'), file_name="revenue_by_month.csv")
 
             # Revenue by lesson type (mean)
-            with st.expander("🎯 Mean Revenue by Lesson Type"):
+            with st.expander("🎯 Revenue by Lesson Type"):
                 try:
                     mean_rev_by_lt = monthly_pay.groupby('lesson_type')['monthly_price'].sum().round(2).rename('Monthly_Revenue').reset_index()
                     st.dataframe(mean_rev_by_lt, use_container_width=True)
