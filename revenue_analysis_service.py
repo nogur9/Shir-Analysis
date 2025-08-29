@@ -55,16 +55,17 @@ class RevenueAnalysisService:
             raise ValueError("No monthly payments data set. Call set_data() first.")
         
         # Precompute each customer's average monthly spend
-        cust_avg = self._monthly_payments_df.groupby('cust_id')['monthly_price'].mean()
-        
+        last_idx = self._monthly_payments_df.groupby('cust_id')['month'].idxmax()
+        last_payments = self._monthly_payments_df.loc[last_idx, ['cust_id', 'month', 'monthly_price']]
+
         rows = []
         for month_period, customers_df in canceled_customers.items():
             if customers_df is None or customers_df.empty:
                 continue
             cust_ids = customers_df['cust_id'].dropna().unique()
             # Map to average; missing customers default to 0
-            avg_values = cust_avg.reindex(cust_ids).fillna(0.0)
-            month_total = float(avg_values.sum())
+            churned_values = last_payments[last_payments['cust_id'].isin(cust_ids)]['monthly_price']
+            month_total = float(churned_values.sum())
             rows.append({
                 'loss_month': month_period.to_timestamp(),
                 'churned_rrl': month_total

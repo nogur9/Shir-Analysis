@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="end" />
+    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="ping">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/revenue_analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/revenue_analysis_service.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,24 +44,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.app.executor": "Debug",
-    "Python.app_test (1).executor": "Debug",
-    "Python.app_test.executor": "Run",
-    "Python.consts.executor": "Run",
-    "Python.duplication_analysis.executor": "Debug",
-    "Python.filtering_handler.executor": "Run",
-    "Python.main (1).executor": "Debug",
-    "Python.main.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/USER/Downloads",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.app.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.app_test (1).executor&quot;: &quot;Debug&quot;,
+    &quot;Python.app_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.consts.executor&quot;: &quot;Run&quot;,
+    &quot;Python.duplication_analysis.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.filtering_handler.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main (1).executor&quot;: &quot;Debug&quot;,
+    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/Downloads&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis" />
@@ -161,30 +164,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753019488688</updated>
-    </task>
-    <task id="LOCAL‎-00001" summary="first commit">
-      <option name="closed" value="true" />
-      <created>1753365595935</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL‎-00001" />
-      <option name="project" value="LOCAL‎" />
-      <updated>1753365595935</updated>
-    </task>
-    <task id="LOCAL‎-00002" summary="added exclusion filters">
-      <option name="closed" value="true" />
-      <created>1753366210855</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL‎-00002" />
-      <option name="project" value="LOCAL‎" />
-      <updated>1753366210855</updated>
-    </task>
-    <task id="LOCAL‎-00003" summary="email &amp; names analysis">
-      <option name="closed" value="true" />
-      <created>1753693732006</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL‎-00003" />
-      <option name="project" value="LOCAL‎" />
-      <updated>1753693732006</updated>
     </task>
     <task id="LOCAL‎-00004" summary="adding streamlit platform">
       <option name="closed" value="true" />
@@ -554,7 +533,31 @@
       <option name="project" value="LOCAL‎" />
       <updated>1756481256130</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL‎-00050" summary="end">
+      <option name="closed" value="true" />
+      <created>1756481462824</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL‎-00050" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756481462825</updated>
+    </task>
+    <task id="LOCAL‎-00051" summary="end">
+      <option name="closed" value="true" />
+      <created>1756484059346</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL‎-00051" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756484059346</updated>
+    </task>
+    <task id="LOCAL‎-00052" summary="ping">
+      <option name="closed" value="true" />
+      <created>1756497648579</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL‎-00052" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756497648579</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -580,7 +583,8 @@
     <MESSAGE value="fixed lesson type - obj" />
     <MESSAGE value="app.py" />
     <MESSAGE value="end" />
-    <option name="LAST_COMMIT_MESSAGE" value="end" />
+    <MESSAGE value="ping" />
+    <option name="LAST_COMMIT_MESSAGE" value="ping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -622,7 +626,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>133</line>
+          <line>136</line>
           <option name="timeStamp" value="220" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -641,66 +645,15 @@
           <option name="timeStamp" value="242" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app.py</url>
-          <line>84</line>
-          <option name="timeStamp" value="266" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app.py</url>
-          <line>77</line>
-          <option name="timeStamp" value="267" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
-          <line>75</line>
-          <option name="timeStamp" value="268" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
-          <line>70</line>
-          <option name="timeStamp" value="269" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>77</line>
-          <option name="timeStamp" value="279" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
-          <line>133</line>
-          <option name="timeStamp" value="281" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
-          <line>138</line>
-          <option name="timeStamp" value="282" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
-          <line>67</line>
-          <option name="timeStamp" value="287" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="'dunnioiyari@gmail.com' in group_data[&quot;Customer Email&quot;].to_list()" language="Python" />
+          <condition expression="&quot;o'brien-alex@alexob.co.uk&quot; in group_data[&quot;Customer Email&quot;].to_list()" language="Python" />
           <url>file://$PROJECT_DIR$/duplication_handler.py</url>
           <line>146</line>
           <option name="timeStamp" value="289" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>79</line>
-          <option name="timeStamp" value="294" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="'dunnioiyari@gmail.com' in idx" language="Python" />
-          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>224</line>
-          <option name="timeStamp" value="296" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>231</line>
-          <option name="timeStamp" value="297" />
+          <url>file://$PROJECT_DIR$/app.py</url>
+          <line>77</line>
+          <option name="timeStamp" value="312" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
