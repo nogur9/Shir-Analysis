@@ -105,8 +105,9 @@ class AnalysisManager:
         Returns:
             Self for method chaining
         """
-        # Compute monthly churn summary
-        self._churn_summary = self.churn_analysis_service.compute_monthly_churn_summary()
+        self._churn_summary = (
+            self.churn_analysis_service.compute_monthly_churn_summary()
+        )
 
         # Get customer data by month
         _, _, all_months = self.churn_analysis_service.get_monthly_counts(self._subscriptions_df)
@@ -127,18 +128,20 @@ class AnalysisManager:
         if self._canceled_customers is None:
             raise ValueError("Must compute churn analysis first. Call compute_churn_analysis() before this method.")
 
-
         # Compute monthly revenue
-        avg_monthly_rev, self._revenue_by_month = (
+        _, self._revenue_by_month = (
             self.revenue_analysis_service.compute_monthly_revenue()
         )
 
-        # Compute churned revenue analysis
-        self.churned_revenue, self.rrl_by_month = (
-            self.revenue_analysis_service.compute_churned_revenue(self._canceled_customers))
-
         return self
 
+    def compute_churned_revenue(self) -> Tuple[float, pd.DataFrame]:
+        """
+        Compute churned revenue totals and monthly breakdown using average monthly spend per churned customer.
+        """
+        if self._canceled_customers is None:
+            raise ValueError("Must compute churn analysis first. Call compute_churn_analysis() before this method.")
+        return self.revenue_analysis_service.compute_churned_revenue(self._canceled_customers)
 
     def get_churn_summary(self) -> pd.DataFrame:
         """Get the computed churn summary"""
@@ -152,7 +155,6 @@ class AnalysisManager:
         if self._revenue_by_month is None:
             raise ValueError("Must compute revenue analysis first. Call compute_revenue_analysis() before this method.")
         return self._revenue_by_month
-
 
     def get_customer_data(self) -> Tuple[pd.DataFrame, Dict, Dict]:
         """Get customer data for analysis"""
@@ -255,39 +257,39 @@ class AnalysisManager:
 
         Args:
             base_filename: Base name for exported files
-
+            
         Returns:
             Dictionary mapping data type to file path
         """
         if self._subscriptions_df is None:
             raise ValueError("Must load data first. Call load_data() before this method.")
-
+        
         exported_files = {}
-
+        
         # Export main data
         if self._subscriptions_df is not None:
             filename = f"{base_filename}_subscriptions.csv"
             self._subscriptions_df.to_csv(filename, index=False)
             exported_files['subscriptions'] = filename
-
+        
         # Export monthly payments
         if self._monthly_payments_df is not None:
             filename = f"{base_filename}_monthly_payments.csv"
             self._monthly_payments_df.to_csv(filename, index=False)
             exported_files['monthly_payments'] = filename
-
+        
         # Export churn summary
         if self._churn_summary is not None:
             filename = f"{base_filename}_churn_summary.csv"
             self._churn_summary.to_csv(filename, index=False)
             exported_files['churn_summary'] = filename
-
+        
         # Export revenue by month
         if self._revenue_by_month is not None:
             filename = f"{base_filename}_revenue_by_month.csv"
             self._revenue_by_month.to_csv(filename, index=False)
             exported_files['revenue_by_month'] = filename
-
+        
         return exported_files
 
 

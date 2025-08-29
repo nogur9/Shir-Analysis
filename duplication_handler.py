@@ -15,6 +15,7 @@ class DuplicationHandler:
         self.end_column = end_column or self.config.get_column('canceled_date')
         self.duplication_guide: Optional[Dict] = None
         self.plan_switch = {}
+        self.duplication_summary = []
     
     def _load_duplication_guide(self, df_with_groups) -> None:
         """Load the duplication handling guide from Excel file"""
@@ -140,10 +141,15 @@ class DuplicationHandler:
     def _process_duplication_types(self, duplicates: pd.DataFrame) -> pd.DataFrame:
         """Process different types of duplications based on the guide"""
         processed_rows = []
-        
+
         for group_id, handling_type in self.duplication_guide.items():
             group_data = duplicates[duplicates['group_id'] == group_id]
-            
+            self.duplication_summary.append({
+                'num_duplicated_rows': group_data.shape[0] - 1,
+                'Customer Name': group_data.iloc[0]['Customer Name'],
+                'Customer Email': group_data.iloc[0]['Customer Email'],
+                'Handle method': handling_type
+            })
             if handling_type == "multiple start - end":
                 # Keep all rows for multiple start-end scenarios
                 processed_rows.append(group_data)
@@ -171,20 +177,9 @@ class DuplicationHandler:
             return pd.concat(processed_rows, ignore_index=True)
         return pd.DataFrame()
     
-    def get_duplication_summary(self, df: pd.DataFrame) -> Dict:
+    def get_duplication_summary(self) -> pd.DataFrame:
         """Get summary of duplications found"""
-        df_with_groups = self.assign_duplicate_group_ids(df)
-
-        group_sizes = df_with_groups.groupby('group_id').size()
-        duplicate_groups = group_sizes[group_sizes > 1]
-        
-        return {
-            'total_customers': len(df),
-            'unique_customers': len(df_with_groups['group_id'].unique()),
-            'duplicate_groups': len(duplicate_groups),
-            'customers_in_duplicates': duplicate_groups.sum() if len(duplicate_groups) > 0 else 0,
-            'largest_duplicate_group': duplicate_groups.max() if len(duplicate_groups) > 0 else 0
-        }
+        return pd.DataFrame(self.duplication_summary)
 
     def _align_maps(self, dup_handler, df_with_groups):
 
@@ -198,6 +193,7 @@ class DuplicationHandler:
         dup_handler['original_group_id'] = dup_handler['group_id']
         dup_handler['group_id'] = dup_handler['original_group_id'].map(new_map)
         return dup_handler
+
 
 
 

@@ -41,35 +41,41 @@ class RevenueAnalysisService:
         return avg_monthly_revenue, revenue_by_month
     
     def compute_churned_revenue(self, 
-                               canceled_customers: Dict,
-                               billing_timing: str = "in_arrears") -> Tuple[float, pd.DataFrame]:
+                               canceled_customers: Dict) -> Tuple[float, pd.DataFrame]:
         """
-        Compute Recurring Revenue Lost (RRL) due to churn
+        Compute churned revenue as the sum of each churned customer's average monthly spend.
+        Assign loss to the customer's cancellation month.
         
         Args:
-            canceled_customers: Dictionary mapping months to customer dataframes
-            billing_timing: "in_advance" or "in_arrears"
-        
+            canceled_customers: Dictionary mapping pd.Period('M') -> dataframe of customers (must include 'cust_id')
         Returns:
-            Tuple of (total_rrl, rrl_by_month_dataframe)
+            Tuple of (total_churned_revenue, dataframe with columns ['loss_month','churned_rrl'])
         """
         if self._monthly_payments_df is None:
             raise ValueError("No monthly payments data set. Call set_data() first.")
         
-        # Build cancellation records
-        cancel_records = self._build_cancellation_records(canceled_customers)
+        # Precompute each customer's average monthly spend
+        cust_avg = self._monthly_payments_df.groupby('cust_id')['monthly_price'].mean()
         
-        if cancel_records.empty:
+        rows = []
+        for month_period, customers_df in canceled_customers.items():
+            if customers_df is None or customers_df.empty:
+                continue
+            cust_ids = customers_df['cust_id'].dropna().unique()
+            # Map to average; missing customers default to 0
+            avg_values = cust_avg.reindex(cust_ids).fillna(0.0)
+            month_total = float(avg_values.sum())
+            rows.append({
+                'loss_month': month_period.to_timestamp(),
+                'churned_rrl': month_total
+            })
+        
+        rrl_by_month = pd.DataFrame(rows)
+        if rrl_by_month.empty:
             return 0.0, pd.DataFrame(columns=["loss_month", "churned_rrl"])
         
-        # Join with monthly payments data
-        cancel_records = self._join_with_monthly_payments(cancel_records)
-        
-        # Calculate revenue loss by month
-        rrl_by_month = self._calculate_revenue_loss_by_month(cancel_records, billing_timing)
-        
-        total_rrl = float(rrl_by_month["churned_rrl"].sum())
-        
+        rrl_by_month = rrl_by_month.groupby('loss_month', as_index=False)['churned_rrl'].sum().sort_values('loss_month')
+        total_rrl = float(rrl_by_month['churned_rrl'].sum())
         return total_rrl, rrl_by_month
     
     def compute_total_revenue(self) -> float:
@@ -206,12 +212,12 @@ class RevenueAnalysisService:
             'max': float(revenue_by_month.max()),
             'std': float(revenue_by_month.std())
         }
-        #
-        # # Lesson type distribution
-        # lesson_type_distribution = self._monthly_payments_df['lesson_type'].value_counts().to_dict()
-        #
-        # # Duration distribution
-        # duration_distribution = self._monthly_payments_df['duration_months'].value_counts().to_dict()
+
+        # Lesson type distribution
+        lesson_type_distribution = self._monthly_payments_df['lesson_type'].value_counts().to_dict()
+
+        # Duration distribution
+        duration_distribution = self._monthly_payments_df['duration_months'].value_counts().to_dict()
         
         return {
             'total_revenue': float(total_revenue),
@@ -219,82 +225,11 @@ class RevenueAnalysisService:
             'total_customers': int(total_customers),
             'total_months': int(total_months),
             'revenue_range': revenue_range,
-            # 'lesson_type_distribution': lesson_type_distribution,
-            # 'duration_distribution': duration_distribution,
+            'lesson_type_distribution': lesson_type_distribution,
+            'duration_distribution': duration_distribution,
             'monthly_revenue_series': revenue_by_month
         }
-
-    def _build_cancellation_records(self, canceled_customers: Dict) -> pd.DataFrame:
-        """Build cancellation records from customer data"""
-        cancel_rows = []
-        
-        for month, customers_df in canceled_customers.items():
-            month_timestamp = month.to_timestamp()
-            
-            for _, row in customers_df.iterrows():
-                cancel_rows.append({
-                    'cust_id': row['cust_id'],
-                    'cancel_month': month_timestamp
-                })
-        
-        return pd.DataFrame(cancel_rows)
     
-    def _join_with_monthly_payments(self, cancel_records: pd.DataFrame) -> pd.DataFrame:
-        """Join cancellation records with monthly payments data"""
-        monthly_data = self._monthly_payments_df[['cust_id', 'month', 'monthly_price']].copy()
-        
-        # Join and filter to months up to cancellation
-        joined = cancel_records.merge(monthly_data, on='cust_id', how='left')
-        joined = joined[joined['month'] <= joined['cancel_month']]
-        
-        if joined.empty:
-            return joined
-        
-        # Get last known price before cancellation
-        joined = joined.sort_values(['cust_id', 'cancel_month', 'month'])
-        last_price = joined.groupby(['cust_id', 'cancel_month'], as_index=False).tail(1)
-        
-        return last_price[['cust_id', 'cancel_month', 'monthly_price']]
-
-
-    @staticmethod
-    def _calculate_revenue_loss_by_month(cancel_records: pd.DataFrame,
-                                         billing_timing: str) -> pd.DataFrame:
-        """Calculate revenue loss by month based on billing timing"""
-        if cancel_records.empty:
-            return pd.DataFrame(columns=["loss_month", "churned_rrl"])
-        
-        # Determine which month gets the revenue loss
-        # if billing_timing == "in_advance":
-        #     # Customers pay at beginning of month -> loss affects next month
-        #     cancel_records["loss_month"] = (
-        #         cancel_records["cancel_month"] + offsets.MonthBegin(1)
-        #     )
-        if billing_timing == "in_arrears":
-            # Billed at end of month -> loss affects same month
-            cancel_records["loss_month"] = cancel_records["cancel_month"]
-        else:
-            raise ValueError("billing_timing must be 'in_advance' or 'in_arrears'")
-        
-        # Aggregate by loss month
-        #        churned = merged.groupby('churn_month', as_index=True)['monthly_payment_at_churn'].sum().sort_index()
-
-        rrl_by_month = (
-            cancel_records.groupby("loss_month")["monthly_price"]
-            .sum()
-            .rename("churned_rrl")
-            .reset_index()
-            .sort_values("loss_month")
-        )
-        
-        # Convert to period for consistency
-        rrl_by_month["loss_month"] = (
-            rrl_by_month["loss_month"].dt.to_period('M').dt.to_timestamp()
-        )
-        
-        return rrl_by_month
-
-
     def get_analysis_summary(self) -> Dict:
         """Get summary of the revenue analysis configuration and data"""
         return {
