@@ -83,7 +83,7 @@ def main():
             mp = analyzer.revenue_analysis_service._monthly_payments_df
             canceled_ids = set()
             # reconstruct canceled ids from rrl inputs by collecting all canceled map entries
-            _, started_map, canceled_map = analyzer.churn_analysis_service.get_customer_data_by_month(
+            started_map, canceled_map = analyzer.churn_analysis_service.get_customer_data_by_month(
                 analyzer._subscriptions_df,
                 analyzer.churn_analysis_service.get_monthly_counts(analyzer._subscriptions_df)[2]
             )
