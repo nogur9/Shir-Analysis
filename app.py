@@ -201,7 +201,7 @@ def main():
             # Revenue by lesson type (mean)
             with st.expander("🎯 Mean Revenue by Lesson Type"):
                 try:
-                    mean_rev_by_lt = monthly_pay.groupby('lesson_type')['monthly_price'].mean().round(2).rename('Avg_Monthly_Revenue').reset_index()
+                    mean_rev_by_lt = monthly_pay.groupby('lesson_type')['monthly_price'].sum().round(2).rename('Monthly_Revenue').reset_index()
                     st.dataframe(mean_rev_by_lt, use_container_width=True)
                     st.download_button("Download Revenue by Lesson Type (CSV)", data=mean_rev_by_lt.to_csv(index=False).encode('utf-8'), file_name="revenue_by_lesson_type.csv")
                 except Exception:
