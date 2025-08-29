@@ -8,6 +8,7 @@ plotly>=5.0.0
 streamlit>=1.25.0
 openpyxl>=3.0.0
 
+
 # Additional requirements for chart downloads
 kaleido>=0.2.1  # Required for plotly chart export to PNG
 psutil>=5.8.0   # Required by kaleido for process management

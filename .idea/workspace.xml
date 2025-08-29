@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="churned" />
+    <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="churned">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -161,30 +163,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753019488688</updated>
-    </task>
-    <task id="LOCAL‎-00008" summary=".">
-      <option name="closed" value="true" />
-      <created>1754757768702</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL‎-00008" />
-      <option name="project" value="LOCAL‎" />
-      <updated>1754757768702</updated>
-    </task>
-    <task id="LOCAL‎-00009" summary="requirements">
-      <option name="closed" value="true" />
-      <created>1754757860890</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL‎-00009" />
-      <option name="project" value="LOCAL‎" />
-      <updated>1754757860890</updated>
-    </task>
-    <task id="LOCAL‎-00010" summary="requirements">
-      <option name="closed" value="true" />
-      <created>1754758540208</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL‎-00010" />
-      <option name="project" value="LOCAL‎" />
-      <updated>1754758540208</updated>
     </task>
     <task id="LOCAL‎-00011" summary="requirements">
       <option name="closed" value="true" />
@@ -554,7 +532,31 @@
       <option name="project" value="LOCAL‎" />
       <updated>1756502498635</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL‎-00057" summary="churned">
+      <option name="closed" value="true" />
+      <created>1756502556127</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL‎-00057" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756502556127</updated>
+    </task>
+    <task id="LOCAL‎-00058" summary="churned">
+      <option name="closed" value="true" />
+      <created>1756502609111</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL‎-00058" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756502609111</updated>
+    </task>
+    <task id="LOCAL‎-00059" summary="churned">
+      <option name="closed" value="true" />
+      <created>1756502664639</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL‎-00059" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756502664639</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -652,6 +654,21 @@
           <url>file://$PROJECT_DIR$/app.py</url>
           <line>101</line>
           <option name="timeStamp" value="323" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>57</line>
+          <option name="timeStamp" value="325" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>73</line>
+          <option name="timeStamp" value="326" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/revenue_analysis_service.py</url>
+          <line>74</line>
+          <option name="timeStamp" value="327" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

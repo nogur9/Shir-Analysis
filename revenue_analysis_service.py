@@ -61,6 +61,10 @@ class RevenueAnalysisService:
         rows = []
         for month_period, customers_df in canceled_customers.items():
             if customers_df is None or customers_df.empty:
+                rows.append({
+                    'loss_month': month_period.to_timestamp(),
+                    'churned_rrl': 0
+                })
                 continue
             cust_ids = customers_df['cust_id'].dropna().unique()
             # Map to average; missing customers default to 0
