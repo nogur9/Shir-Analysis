@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="churned">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/revenue_analysis_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/revenue_analysis_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,22 +163,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753019488688</updated>
-    </task>
-    <task id="LOCAL‎-00005" summary=".">
-      <option name="closed" value="true" />
-      <created>1754671584099</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL‎-00005" />
-      <option name="project" value="LOCAL‎" />
-      <updated>1754671584099</updated>
-    </task>
-    <task id="LOCAL‎-00006" summary=".">
-      <option name="closed" value="true" />
-      <created>1754673298743</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL‎-00006" />
-      <option name="project" value="LOCAL‎" />
-      <updated>1754673298744</updated>
     </task>
     <task id="LOCAL‎-00007" summary=".">
       <option name="closed" value="true" />
@@ -559,7 +540,23 @@
       <option name="project" value="LOCAL‎" />
       <updated>1756500102275</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL‎-00054" summary="churned">
+      <option name="closed" value="true" />
+      <created>1756501322193</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL‎-00054" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756501322193</updated>
+    </task>
+    <task id="LOCAL‎-00055" summary="churned">
+      <option name="closed" value="true" />
+      <created>1756501638120</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL‎-00055" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756501638120</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -652,6 +649,11 @@
           <url>file://$PROJECT_DIR$/duplication_handler.py</url>
           <line>146</line>
           <option name="timeStamp" value="289" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app.py</url>
+          <line>101</line>
+          <option name="timeStamp" value="323" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

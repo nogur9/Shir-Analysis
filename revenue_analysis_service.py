@@ -204,7 +204,7 @@ class RevenueAnalysisService:
 
         # Basic revenue metrics
         total_revenue = monthly_pay_df['monthly_price'].sum()
-        avg_monthly_revenue = monthly_pay_df['monthly_price'].mean()
+        avg_monthly_price = monthly_pay_df['monthly_price'].mean()
         total_customers = monthly_pay_df['cust_id'].nunique()
         total_months = monthly_pay_df['month'].nunique()
         
@@ -213,7 +213,8 @@ class RevenueAnalysisService:
         revenue_range = {
             'min': float(revenue_by_month.min()),
             'max': float(revenue_by_month.max()),
-            'std': float(revenue_by_month.std())
+            'std': float(revenue_by_month.std()),
+            'average': float(revenue_by_month.average())
         }
 
         # Lesson type distribution
@@ -224,7 +225,7 @@ class RevenueAnalysisService:
         
         return {
             'total_revenue': float(total_revenue),
-            'average_monthly_revenue': float(avg_monthly_revenue),
+            'avg_monthly_price': float(avg_monthly_price),
             'total_customers': int(total_customers),
             'total_months': int(total_months),
             'revenue_range': revenue_range,

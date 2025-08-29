@@ -171,7 +171,7 @@ def main():
             with col1:
                 st.metric("Total Revenue", f"${revenue_summary['total_revenue']:,.2f}")
             with col2:
-                st.metric("Average Monthly Revenue", f"${revenue_summary['average_monthly_revenue']:,.2f}")
+                st.metric("Average Monthly Revenue", f"${revenue_summary['revenue_range']['average']:,.2f}")
             with col3:
                 st.metric("Total Customers", revenue_summary['total_customers'])
             with col4:
@@ -179,10 +179,11 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 st.write("**📊 Monthly Revenue Statistics**")
-                st.write(f"• **Highest Month:** ${revenue_summary['revenue_range']['max']:,.2f}")
-                st.write(f"• **Lowest Month:** ${revenue_summary['revenue_range']['min']:,.2f}")
-                st.write(f"• **Average Month:** ${revenue_summary['average_monthly_revenue']:,.2f}")
+                st.write(f"• **Highest Monthly Revenue:** ${revenue_summary['revenue_range']['max']:,.2f}")
+                st.write(f"• **Lowest Monthly Revenue:** ${revenue_summary['revenue_range']['min']:,.2f}")
+                st.write(f"• **Average Monthly Revenue:** ${revenue_summary['revenue_range']['average']:,.2f}")
                 st.write(f"• **Revenue Variability:** ${revenue_summary['revenue_range']['std']:,.2f}")
+                st.write(f"\n• **Average Monthly Price:** ${revenue_summary['avg_monthly_price']['std']:,.2f}")
             with col2:
                 st.write("**📈 Revenue by Month (with Churned)**")
                 rev_df = revenue_by_month.reset_index(); rev_df.columns = ['Month', 'Revenue']
@@ -193,6 +194,7 @@ def main():
                     rev_df['Churned_Revenue'] = 0.0
                 st.dataframe(rev_df, use_container_width=True)
                 st.download_button("Download Revenue Table (CSV)", data=rev_df.to_csv(index=False).encode('utf-8'), file_name="revenue_by_month.csv")
+
 
             # Revenue by lesson type (mean)
             with st.expander("🎯 Revenue by Lesson Type"):
