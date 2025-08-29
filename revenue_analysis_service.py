@@ -190,7 +190,7 @@ class RevenueAnalysisService:
             'total_payments': len(customer_data)
         }
     
-    def get_revenue_summary(self) -> Dict[str, any]:
+    def get_revenue_summary(self, monthly_pay_df: Optional[pd.DataFrame] = None) -> Dict[str, any]:
         """
         Get comprehensive revenue summary
         
@@ -199,15 +199,17 @@ class RevenueAnalysisService:
         """
         if self._monthly_payments_df is None:
             return {}
+        if monthly_pay_df is None:
+            monthly_pay_df =  self._monthly_payments_df.copy()
 
         # Basic revenue metrics
-        total_revenue = self._monthly_payments_df['monthly_price'].sum()
-        avg_monthly_revenue = self._monthly_payments_df['monthly_price'].mean()
-        total_customers = self._monthly_payments_df['cust_id'].nunique()
-        total_months = self._monthly_payments_df['month'].nunique()
+        total_revenue = monthly_pay_df['monthly_price'].sum()
+        avg_monthly_revenue = monthly_pay_df['monthly_price'].mean()
+        total_customers = monthly_pay_df['cust_id'].nunique()
+        total_months = monthly_pay_df['month'].nunique()
         
         # Revenue distribution
-        revenue_by_month = self._monthly_payments_df.groupby('month')['monthly_price'].sum()
+        revenue_by_month = monthly_pay_df.groupby('month')['monthly_price'].sum()
         revenue_range = {
             'min': float(revenue_by_month.min()),
             'max': float(revenue_by_month.max()),
@@ -215,10 +217,10 @@ class RevenueAnalysisService:
         }
 
         # Lesson type distribution
-        lesson_type_distribution = self._monthly_payments_df['lesson_type'].value_counts().to_dict()
+        lesson_type_distribution = monthly_pay_df['lesson_type'].value_counts().to_dict()
 
         # Duration distribution
-        duration_distribution = self._monthly_payments_df['duration_months'].value_counts().to_dict()
+        duration_distribution = monthly_pay_df['duration_months'].value_counts().to_dict()
         
         return {
             'total_revenue': float(total_revenue),

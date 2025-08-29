@@ -71,14 +71,15 @@ def main():
             analyzer.compute_revenue_analysis()
  
             churn_summary = analyzer.get_churn_summary()
-            revenue_summary = analyzer.get_revenue_summary()
             revenue_by_month = analyzer.get_revenue_by_month()
-            total_rrl, rrl_by_month = analyzer.compute_churned_revenue()
+            _, rrl_by_month = analyzer.compute_churned_revenue()
 
             analysis_summary = analyzer.get_analysis_summary()
             monthly_pay = analyzer.revenue_analysis_service._monthly_payments_df
             monthly_pay = monthly_pay[monthly_pay['month'] >= from_month_ts]
+
             lesson_summary = analyzer.get_lesson_plan_summary(monthly_pay)
+            revenue_summary = analyzer.get_revenue_summary(monthly_pay)
 
             canceled_ids = set()
             # reconstruct canceled ids from rrl inputs by collecting all canceled map entries
@@ -168,9 +169,9 @@ def main():
             st.subheader("💰 Revenue Analysis")
             col1, col2, col3, col4 = st.columns(4)
             with col1:
-                st.metric("Total Revenue", f"${revenue_summary['total_revenue']:,.0f}")
+                st.metric("Total Revenue", f"${revenue_summary['total_revenue']:,.2f}")
             with col2:
-                st.metric("Average Monthly Revenue", f"${revenue_summary['average_monthly_revenue']:,.0f}")
+                st.metric("Average Monthly Revenue", f"${revenue_summary['average_monthly_revenue']:,.2f}")
             with col3:
                 st.metric("Total Customers", revenue_summary['total_customers'])
             with col4:
@@ -178,10 +179,10 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 st.write("**📊 Monthly Revenue Statistics**")
-                st.write(f"• **Highest Month:** ${revenue_summary['revenue_range']['max']:,.0f}")
-                st.write(f"• **Lowest Month:** ${revenue_summary['revenue_range']['min']:,.0f}")
-                st.write(f"• **Average Month:** ${revenue_summary['average_monthly_revenue']:,.0f}")
-                st.write(f"• **Revenue Variability:** ${revenue_summary['revenue_range']['std']:,.0f}")
+                st.write(f"• **Highest Month:** ${revenue_summary['revenue_range']['max']:,.2f}")
+                st.write(f"• **Lowest Month:** ${revenue_summary['revenue_range']['min']:,.2f}")
+                st.write(f"• **Average Month:** ${revenue_summary['average_monthly_revenue']:,.2f}")
+                st.write(f"• **Revenue Variability:** ${revenue_summary['revenue_range']['std']:,.2f}")
             with col2:
                 st.write("**📈 Revenue by Month (with Churned)**")
                 rev_df = revenue_by_month.reset_index(); rev_df.columns = ['Month', 'Revenue']
@@ -206,11 +207,11 @@ def main():
             st.subheader("💸 Churned Revenue Summary")
             col1, col2 = st.columns(2)
             with col1:
-                st.metric("Total Churned Revenue", f"${total_rrl:,.0f}")
+                st.metric("Total Churned Revenue", f"${float(rrl_by_month['churned_rrl'].sum()):,.2f}")
                 if rrl_by_month is not None and not rrl_by_month.empty:
-                    st.write(f"• **Max Month:** ${rrl_by_month['churned_rrl'].max():,.0f}")
-                    st.write(f"• **Min Month:** ${rrl_by_month['churned_rrl'].min():,.0f}")
-                    st.write(f"• **Avg Month:** ${rrl_by_month['churned_rrl'].mean():,.0f}")
+                    st.write(f"• **Max Month:** ${rrl_by_month['churned_rrl'].max():,.2f}")
+                    st.write(f"• **Min Month:** ${rrl_by_month['churned_rrl'].min():,.2f}")
+                    st.write(f"• **Avg Month:** ${rrl_by_month['churned_rrl'].mean():,.2f}")
                     st.download_button("Download Churned Revenue by Month (CSV)", data=rrl_by_month.to_csv(index=False).encode('utf-8'), file_name="churned_revenue_by_month.csv")
             with col2:
                 try:

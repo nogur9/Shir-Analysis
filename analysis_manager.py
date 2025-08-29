@@ -163,9 +163,9 @@ class AnalysisManager:
 
         return self._subscriptions_df, self._started_customers, self._canceled_customers
 
-    def get_revenue_summary(self) -> Dict:
+    def get_revenue_summary(self, monthly_pay_df: Optional[pd.DataFrame] = None) -> Dict:
         """Get comprehensive revenue summary"""
-        return self.revenue_analysis_service.get_revenue_summary()
+        return self.revenue_analysis_service.get_revenue_summary(monthly_pay_df)
 
     def get_customer_lifetime_value(self, customer_id: str) -> Dict[str, float]:
         """Get lifetime value metrics for a specific customer"""
