@@ -235,21 +235,6 @@ def main():
                     st.metric("Min Churn Rate", f"{(churn_summary['Churn_Rate'].min()*100):.2f}%")
 
 
-            with st.expander("**Lesson Plan Summary**"):
-                if lesson_summary:
-                    st.write(f"Count of monthly payments: {lesson_summary['lesson_type_distribution']}")
-                    st.write(f"Count of monthly payments: {lesson_summary['duration_distribution']}")
-                    st.write(f"Count of monthly payments: {lesson_summary['frequency_distribution']}")
-                    st.write(f"Average monthly price: ${lesson_summary['average_monthly_price']:.2f}")
-                    st.write(f"Total monthly revenue: ${lesson_summary['total_monthly_revenue']:.2f}")
-                    st.write(f"Count of monthly payments: {lesson_summary['total_monthly_payments']}")
-                    fig =  payment_hist(lesson_summary['monthly_price_distribution'])
-                    st.plotly_chart(fig, use_container_width=True)
-
-                else:
-                    st.write("No lesson plan data available")
-
-
             with st.expander("📄 Monthly Churn Summary (dataframe)"):
                 nice_churn = churn_summary[['Month', 'Starts', 'Cancellations', 'Actives', 'Churn_Rate']].copy()
                 nice_churn['Churn_Rate'] = (nice_churn['Churn_Rate'] * 100).round(2).astype(str) + '%'
@@ -285,6 +270,23 @@ def main():
         except Exception as e:
             st.error(f"❌ Error during analysis: {str(e)}")
             st.exception(e)
+
+
+            with st.expander("Lesson Plan Summary"):
+                if lesson_summary:
+                    st.write(f"Count of monthly payments: {lesson_summary['lesson_type_distribution']}")
+                    st.write(f"Count of monthly payments: {lesson_summary['duration_distribution']}")
+                    st.write(f"Count of monthly payments: {lesson_summary['frequency_distribution']}")
+                    st.write(f"Average monthly price: ${lesson_summary['average_monthly_price']:.2f}")
+                    st.write(f"Total monthly revenue: ${lesson_summary['total_monthly_revenue']:.2f}")
+                    st.write(f"Count of monthly payments: {lesson_summary['total_monthly_payments']}")
+                    fig =  payment_hist(lesson_summary['monthly_price_distribution'])
+                    st.plotly_chart(fig, use_container_width=True)
+
+                else:
+                    st.write("No lesson plan data available")
+
+
 
         with st.expander("Duplication Summary"):
             dup_summary = analyzer.duplication_handler.get_duplication_summary()
