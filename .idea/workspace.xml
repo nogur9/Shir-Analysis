@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f642c20f-9711-42a4-8103-07849f5a2bd3" name="Changes" comment="app.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/duplication_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/duplication_handler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +52,7 @@
     "Python.consts.executor": "Run",
     "Python.duplication_analysis.executor": "Debug",
     "Python.filtering_handler.executor": "Run",
-    "Python.main (1).executor": "Run",
+    "Python.main (1).executor": "Debug",
     "Python.main.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -74,7 +74,7 @@
       <recent name="C:\Users\USER\PycharmProjects\Shir-Analysis\notebooks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.app">
+  <component name="RunManager" selected="Python.main (1)">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Shir-Analysis" />
       <option name="ENV_FILES" value="" />
@@ -89,6 +89,28 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Shir-Analysis" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -121,6 +143,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.app" />
         <item itemvalue="Python.main" />
       </list>
@@ -486,7 +509,39 @@
       <option name="project" value="LOCAL‎" />
       <updated>1756468694218</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL‎-00044" summary="app.py">
+      <option name="closed" value="true" />
+      <created>1756469123196</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL‎-00044" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756469123196</updated>
+    </task>
+    <task id="LOCAL‎-00045" summary="app.py">
+      <option name="closed" value="true" />
+      <created>1756469290295</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL‎-00045" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756469290295</updated>
+    </task>
+    <task id="LOCAL‎-00046" summary="app.py">
+      <option name="closed" value="true" />
+      <created>1756469341732</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL‎-00046" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756469341732</updated>
+    </task>
+    <task id="LOCAL‎-00047" summary="app.py">
+      <option name="closed" value="true" />
+      <created>1756469420161</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL‎-00047" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1756469420161</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -567,19 +622,60 @@
           <option name="timeStamp" value="227" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>8</line>
+          <option name="timeStamp" value="242" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app.py</url>
-          <line>83</line>
-          <option name="timeStamp" value="235" />
+          <line>84</line>
+          <option name="timeStamp" value="266" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app.py</url>
+          <line>77</line>
+          <option name="timeStamp" value="267" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
+          <line>75</line>
+          <option name="timeStamp" value="268" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/analysis_manager.py</url>
+          <line>70</line>
+          <option name="timeStamp" value="269" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="'mekarenmok@yahoo.com' in group_data[&quot;Customer Email&quot;].to_list()" language="Python" />
+          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
+          <line>146</line>
+          <option name="timeStamp" value="276" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>197</line>
-          <option name="timeStamp" value="236" />
+          <line>77</line>
+          <option name="timeStamp" value="279" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lesson_plan_service.py</url>
-          <line>198</line>
-          <option name="timeStamp" value="237" />
+          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
+          <line>133</line>
+          <option name="timeStamp" value="281" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
+          <line>138</line>
+          <option name="timeStamp" value="282" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
+          <line>164</line>
+          <option name="timeStamp" value="285" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/duplication_handler.py</url>
+          <line>163</line>
+          <option name="timeStamp" value="286" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -100,7 +100,7 @@ class LessonPlanService:
         """Calculate contract start and end dates"""
         payments = payments.copy()
         start = self.config.get_column('start_date')
-        end = self.config.get_column('ended_date')
+        end = self.config.get_column('canceled_date')
 
         # Contract end = start + duration - 1 day
         max_date = datetime.datetime.strptime(self.config.MAX_ANALYSIS_DATE, "%d/%m/%Y")
@@ -215,7 +215,7 @@ class LessonPlanService:
     def _apply_plan_switch(self, payments, plan_switch):
         payments = payments.copy()
         start = self.config.get_column('start_date')
-        end = self.config.get_column('ended_date')
+        end = self.config.get_column('canceled_date')
 
         plan_entries = []
         for idx, plans in plan_switch.items():

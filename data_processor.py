@@ -85,10 +85,10 @@ class DataProcessor:
             
             if 'end_date' in fix and fix['end_date']:
                 end_date = datetime.datetime.strptime(fix['end_date'], "%d/%m/%Y")
-                df.loc[mask, self.config.get_column('ended_date')] = end_date
+                # df.loc[mask, self.config.get_column('ended_date')] = end_date
                 df.loc[mask, self.config.get_column('canceled_date')] = end_date
             elif 'end_date' in fix and fix['end_date'] is None:
-                df.loc[mask, self.config.get_column('ended_date')] = pd.NaT
+                # df.loc[mask, self.config.get_column('ended_date')] = pd.NaT
                 df.loc[mask, self.config.get_column('canceled_date')] = pd.NaT
         
         return df
@@ -100,7 +100,7 @@ class DataProcessor:
             self.config.get_column('name'): new_customer_data['name'],
             self.config.get_column('email'): new_customer_data['email'],
             self.config.get_column('start_date'): datetime.datetime.strptime(new_customer_data['start_date'], "%d/%m/%Y"),
-            self.config.get_column('ended_date'): pd.NaT,
+            #self.config.get_column('ended_date'): pd.NaT,
             self.config.get_column('canceled_date'): pd.NaT,
             self.config.get_column('status'): 'active'
         }
@@ -113,7 +113,7 @@ class DataProcessor:
         datetime_columns = [
             self.config.get_column('start_date'),
             self.config.get_column('canceled_date'),
-            self.config.get_column('ended_date')
+            #self.config.get_column('ended_date')
         ]
         
         for col in datetime_columns:
@@ -130,7 +130,7 @@ class DataProcessor:
         df = df[df[self.config.get_column('start_date')] <= max_date]
         
         # Filter end dates
-        end_columns = [self.config.get_column('canceled_date'), self.config.get_column('ended_date')]
+        end_columns = [self.config.get_column('canceled_date')]#, self.config.get_column('ended_date')]
         for col in end_columns:
             if col in df.columns:
                 df.loc[df[col] > max_date, col] = pd.NaT

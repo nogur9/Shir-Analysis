@@ -19,7 +19,7 @@ class Config:
         "customer_id": "Customer ID",
         "start_date": "Start Date (UTC)",
         "canceled_date": "Canceled At (UTC)",
-        "ended_date": "Ended At (UTC)",
+        #"ended_date": "Ended At (UTC)",
         "status": "Status",
         "amount": "Amount"
     }

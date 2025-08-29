@@ -12,7 +12,7 @@ class DuplicationHandler:
     
     def __init__(self, end_column: str = None):
         self.config = Config()
-        self.end_column = end_column or self.config.get_column('canceled_date')
+        self.end_column = self.config.get_column('canceled_date')
         self.duplication_guide: Optional[Dict] = None
         self.plan_switch = {}
         self.duplication_summary = []
@@ -95,8 +95,8 @@ class DuplicationHandler:
         df = df.copy()
 
         start = self.config.get_column('start_date')
-        end = self.config.get_column('ended_date')
-        df = df[df[end] - df[start] > pd.Timedelta(days=2)]
+        end = self.config.get_column('canceled_date')
+        df = df[~(df[end] - df[start] < pd.Timedelta(days=2))]
 
         if df.shape[0] < 2:
             return df
@@ -119,7 +119,7 @@ class DuplicationHandler:
         # Assign group IDs
         df_with_groups = self.assign_duplicate_group_ids(df)
 
-        duplication_guide = self._load_duplication_guide(df_with_groups)
+        self._load_duplication_guide(df_with_groups)
         # Separate duplicates and non-duplicates
         non_duplicates = df_with_groups[~df_with_groups['group_id'].isin(self.duplication_guide.keys())]
         duplicates = df_with_groups[df_with_groups['group_id'].isin(self.duplication_guide.keys())]
@@ -160,7 +160,7 @@ class DuplicationHandler:
                     group_data,
                     min_col=self.config.get_column('start_date'),
                     max_col=self.end_column
-                )
+                ).copy()
                 collapsed[self.end_column] = pd.NaT
                 processed_rows.append(collapsed)
                 
@@ -170,7 +170,7 @@ class DuplicationHandler:
                     group_data,
                     min_col=self.config.get_column('start_date'),
                     max_col=self.end_column
-                )
+                ).copy()
                 processed_rows.append(collapsed)
         
         if processed_rows:
