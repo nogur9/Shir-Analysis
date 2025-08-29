@@ -7,10 +7,10 @@ class Config:
     """Centralized configuration for the churn analysis system"""
 
     # File paths
-    SUBSCRIPTIONS_FILE = "data/subscriptions.csv"
-    PAYMENTS_FILE = "data/payments.csv"
-    DUPLICATES_HANDLING_FILE = "data/handling_duplicates.xlsx"
-    DUPLICATES_OUTPUT_FILE = "data/duplicates.csv"
+    SUBSCRIPTIONS_FILE = "subscriptions.csv"
+    PAYMENTS_FILE = "payments.csv"
+    DUPLICATES_HANDLING_FILE = "handling_duplicates.xlsx"
+    DUPLICATES_OUTPUT_FILE = "duplicates.csv"
     
     # Column names
     COLUMNS = {
